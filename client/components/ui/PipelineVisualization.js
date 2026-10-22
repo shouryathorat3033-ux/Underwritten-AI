@@ -98,9 +98,10 @@ function stageStatus(stageKey, currentStage) {
 }
 
 function scoreColor(score) {
-  if (score <= 35) return "#10b981";
-  if (score <= 55) return "#f59e0b";
-  return "#ef4444";
+  if (score <= 35) return "#3B82F6";
+  if (score <= 55) return "#06B6D4";
+  if (score <= 75) return "#F59E0B";
+  return "#F43F5E";
 }
 
 /* ------------------------------------------------------------------ */
@@ -108,8 +109,8 @@ function scoreColor(score) {
 /* ------------------------------------------------------------------ */
 const KEYFRAMES = `
 @keyframes pipeline-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.45); }
-  50% { box-shadow: 0 0 20px 6px rgba(16,185,129,0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.5); }
+  50% { box-shadow: 0 0 20px 6px rgba(37,99,235,0.3); }
 }
 @keyframes pipeline-spin {
   to { transform: rotate(360deg); }
@@ -136,8 +137,8 @@ function Spinner() {
       style={{
         width: 16,
         height: 16,
-        border: "2px solid rgba(16,185,129,0.25)",
-        borderTopColor: "#10b981",
+        border: "2px solid rgba(37,99,235,0.25)",
+        borderTopColor: "#60A5FA",
         borderRadius: "50%",
         animation: "pipeline-spin 0.8s linear infinite",
       }}
@@ -148,7 +149,7 @@ function Spinner() {
 /** Checkmark shown when a stage is completed */
 function CheckMark() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
   );
@@ -158,7 +159,7 @@ function CheckMark() {
 function Connector({ status }) {
   const isActive = status === "active";
   const isCompleted = status === "completed";
-  const lineColor = isCompleted ? "rgba(16,185,129,0.5)" : isActive ? "rgba(16,185,129,0.35)" : "rgba(63,63,70,0.4)";
+  const lineColor = isCompleted ? "rgba(37,99,235,0.5)" : isActive ? "rgba(96,165,250,0.5)" : "rgba(37,99,235,0.18)";
 
   return (
     <div
@@ -181,7 +182,7 @@ function Connector({ status }) {
             y1="4"
             x2="100%"
             y2="4"
-            stroke="rgba(16,185,129,0.6)"
+            stroke="rgba(96,165,250,0.8)"
             strokeWidth="2"
             strokeDasharray="6 6"
             style={{ animation: isActive ? "pipeline-flow 0.6s linear infinite" : "none" }}
@@ -202,8 +203,8 @@ function Connector({ status }) {
                 width: 5,
                 height: 5,
                 borderRadius: "50%",
-                background: "#10b981",
-                boxShadow: "0 0 6px #10b981",
+                background: "#60A5FA",
+                boxShadow: "0 0 8px #3B82F6",
                 offsetPath: `path("M 0 3 L 48 3")`,
                 animation: `pipeline-particle 1.2s ${delay}s linear infinite`,
               }}
@@ -214,7 +215,7 @@ function Connector({ status }) {
 
       {/* Arrow head */}
       <svg width="8" height="8" viewBox="0 0 8 8" style={{ position: "absolute", right: -3, top: -3 }}>
-        <path d="M0 0 L8 4 L0 8" fill={isCompleted ? "rgba(16,185,129,0.5)" : isActive ? "rgba(16,185,129,0.35)" : "rgba(63,63,70,0.3)"} />
+        <path d="M0 0 L8 4 L0 8" fill={isCompleted ? "rgba(37,99,235,0.6)" : isActive ? "rgba(96,165,250,0.8)" : "rgba(37,99,235,0.2)"} />
       </svg>
     </div>
   );
@@ -227,22 +228,22 @@ function StageCard({ stage, status, index }) {
   const isCompleted = status === "completed";
 
   const borderColor = isActive
-    ? "rgba(16,185,129,0.5)"
+    ? "rgba(96,165,250,0.6)"
     : isCompleted
-      ? "rgba(16,185,129,0.25)"
-      : "rgba(63,63,70,0.3)";
+      ? "rgba(37,99,235,0.3)"
+      : "rgba(37,99,235,0.15)";
 
   const bgColor = isActive
-    ? "rgba(16,185,129,0.06)"
+    ? "rgba(37,99,235,0.12)"
     : isCompleted
-      ? "rgba(16,185,129,0.03)"
-      : "rgba(24,24,27,0.6)";
+      ? "rgba(14,21,38,0.7)"
+      : "rgba(10,15,29,0.5)";
 
   const iconStroke = isActive
-    ? "#10b981"
+    ? "#60A5FA"
     : isCompleted
-      ? "#10b981"
-      : "#52525b";
+      ? "#3B82F6"
+      : "#64748B";
 
   return (
     <motion.div
@@ -277,10 +278,10 @@ function StageCard({ stage, status, index }) {
           alignItems: "center",
           justifyContent: "center",
           background: isActive
-            ? "rgba(16,185,129,0.12)"
+            ? "rgba(37,99,235,0.2)"
             : isCompleted
-              ? "rgba(16,185,129,0.08)"
-              : "rgba(39,39,42,0.5)",
+              ? "rgba(37,99,235,0.12)"
+              : "rgba(14,21,38,0.5)",
           transition: "background 0.4s",
         }}
       >
@@ -304,7 +305,8 @@ function StageCard({ stage, status, index }) {
         style={{
           fontSize: 11,
           fontWeight: 600,
-          color: isActive ? "#10b981" : isCompleted ? "#a7f3d0" : "#71717a",
+          fontFamily: "monospace",
+          color: isActive ? "#93C5FD" : isCompleted ? "#E2E8F0" : "#64748B",
           textAlign: "center",
           lineHeight: 1.3,
           letterSpacing: "0.02em",

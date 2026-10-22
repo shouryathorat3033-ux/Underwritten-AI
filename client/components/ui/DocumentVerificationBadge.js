@@ -12,18 +12,18 @@ export default function DocumentVerificationBadge({ verification, compact = fals
 
   const { authentic, confidence, verdict, reasons, checks } = verification;
 
-  const color = verdict === "authentic" ? "#10b981" : verdict === "suspicious" ? "#f59e0b" : "#ef4444";
-  const bg = verdict === "authentic" ? "rgba(16,185,129," : verdict === "suspicious" ? "rgba(245,158,11," : "rgba(239,68,68,";
+  const color = verdict === "authentic" ? "#3B82F6" : verdict === "suspicious" ? "#F59E0B" : "#F43F5E";
+  const bg = verdict === "authentic" ? "rgba(37,99,235," : verdict === "suspicious" ? "rgba(245,158,11," : "rgba(244,63,94,";
   const icon = verdict === "authentic"
     ? <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
     : verdict === "suspicious"
     ? <><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></>
     : <><circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" /></>;
-  const label = verdict === "authentic" ? "Verified Authentic" : verdict === "suspicious" ? "Needs Review" : "Likely Fake";
+  const label = verdict === "authentic" ? "Verified Authentic" : verdict === "suspicious" ? "Review Required" : "Anomaly Flagged";
 
   if (compact) {
     return (
-      <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: `${bg}0.1)`, color }}>
+      <span className="inline-flex items-center gap-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded" style={{ background: `${bg}0.15)`, color, border: `1px solid ${color}35` }}>
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">{icon}</svg>
         {label}
       </span>
