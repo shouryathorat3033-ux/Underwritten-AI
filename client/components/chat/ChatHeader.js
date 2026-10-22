@@ -11,47 +11,51 @@ export default function ChatHeader({ onNewChat, onClose }) {
       height: 56, flexShrink: 0,
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: "0 16px",
-      background: "var(--chat-header-bg)",
+      background: "rgba(10,15,29,0.95)",
       backdropFilter: "blur(12px)",
-      borderBottom: "1px solid var(--chat-border)",
+      borderBottom: "1px solid rgba(59,130,246,0.15)",
       position: "sticky", top: 0, zIndex: 2,
     }}>
       {/* Left */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <div style={{ position: "relative" }}>
           <div style={{
-            width: 36, height: 36, borderRadius: "50%",
-            background: "linear-gradient(135deg, #10b981, #059669)",
+            width: 36, height: 36, borderRadius: 10,
+            background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
             display: "flex", alignItems: "center", justifyContent: "center",
             color: "#fff", fontWeight: 900, fontSize: 13,
-          }}>U</div>
+            border: "1px solid rgba(59,130,246,0.3)",
+            boxShadow: "0 0 15px rgba(37,99,235,0.3)",
+          }}>
+            AI
+          </div>
           <div style={{
-            position: "absolute", bottom: -1, right: -1,
+            position: "absolute", bottom: -2, right: -2,
             width: 10, height: 10, borderRadius: "50%",
-            background: "#22c55e",
-            border: "2px solid var(--chat-bg)",
+            background: "#3B82F6",
+            border: "2px solid #070A13",
           }} />
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--chat-text-primary)" }}>
-            UnderwriteAI
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#FFFFFF", fontFamily: "var(--font-sans, inherit)" }}>
+            UnderwriteAI Co-Pilot
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "var(--chat-text-muted)" }}>
-            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#10b981" }} />
-            {pageLabel}
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, fontFamily: "monospace", color: "#60A5FA" }}>
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#3B82F6", boxShadow: "0 0 6px #3B82F6" }} />
+            [{pageLabel.toUpperCase()}]
           </div>
         </div>
       </div>
 
       {/* Right */}
       <div style={{ display: "flex", gap: 4 }}>
-        <HeaderBtn title="New chat" onClick={onNewChat}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <HeaderBtn title="New Session" onClick={onNewChat}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
         </HeaderBtn>
-        <HeaderBtn title="Close" onClick={onClose}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <HeaderBtn title="Dismiss" onClick={onClose}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </HeaderBtn>
@@ -66,19 +70,21 @@ function HeaderBtn({ children, onClick, title }) {
       onClick={onClick}
       title={title}
       style={{
-        width: 32, height: 32, borderRadius: 8,
+        width: 30, height: 30, borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center",
-        background: "transparent", border: "none",
-        color: "var(--chat-btn-color)", cursor: "pointer",
+        background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
+        color: "#94A3B8", cursor: "pointer",
         transition: "all 0.2s",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = "var(--chat-btn-hover-bg)";
-        e.currentTarget.style.color = "var(--chat-btn-hover-color)";
+        e.currentTarget.style.background = "rgba(59,130,246,0.15)";
+        e.currentTarget.style.borderColor = "rgba(59,130,246,0.3)";
+        e.currentTarget.style.color = "#FFFFFF";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = "transparent";
-        e.currentTarget.style.color = "var(--chat-btn-color)";
+        e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+        e.currentTarget.style.color = "#94A3B8";
       }}
     >
       {children}

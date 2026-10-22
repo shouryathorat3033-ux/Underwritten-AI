@@ -13,20 +13,16 @@ export default function AskAI({ question, label }) {
   };
 
   return (
-    <button onClick={handleClick}
-      className="inline-flex items-center gap-1.5 text-xs font-medium transition-all duration-200"
-      style={{
-        padding: "5px 12px", borderRadius: 999,
-        background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.15)",
-        color: "#10b981", cursor: "pointer", fontFamily: "inherit",
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(16,185,129,0.12)"; e.currentTarget.style.borderColor = "rgba(16,185,129,0.3)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(16,185,129,0.06)"; e.currentTarget.style.borderColor = "rgba(16,185,129,0.15)"; }}
+    <button
+      type="button"
+      onClick={handleClick}
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider transition-all duration-200 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 border border-blue-500/30 cursor-pointer"
     >
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z" /><path d="M10 22v-4M14 22v-4M10 18h4" />
+        <path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z" />
+        <path d="M10 22v-4M14 22v-4M10 18h4" />
       </svg>
-      {label || "Ask AI"}
+      <span>[{label || "QUERY_AI"}]</span>
     </button>
   );
 }

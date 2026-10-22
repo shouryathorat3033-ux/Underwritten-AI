@@ -8,7 +8,7 @@ export function Skeleton({ width, height, rounded, className = "", style = {} })
         width: width || "100%",
         height: height || 16,
         borderRadius: rounded === "full" ? 999 : rounded || 8,
-        background: "linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.03) 75%)",
+        background: "linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(59,130,246,0.08) 50%, rgba(255,255,255,0.03) 75%)",
         backgroundSize: "200% 100%",
         animation: "skeleton-shimmer 2s cubic-bezier(0.23,1,0.32,1) infinite",
         ...style,

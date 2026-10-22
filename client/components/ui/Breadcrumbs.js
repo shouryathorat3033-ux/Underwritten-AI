@@ -3,11 +3,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LABEL_MAP = {
-  dashboard: "Dashboard",
-  assess: "New Assessment",
-  history: "History",
-  analytics: "Analytics",
-  assessment: "Assessment",
+  dashboard: "COCKPIT",
+  assess: "INTAKE_WIZARD",
+  history: "ARCHIVE_LEDGER",
+  analytics: "PORTFOLIO_ANALYTICS",
+  assessment: "DOSSIER",
+  claims: "CLAIMS_REGISTER",
+  audit: "AUDIT_LOG",
+  compliance: "COMPLIANCE_MATRIX",
+  fairness: "FAIRNESS_AUDIT",
+  fraud: "FRAUD_RADAR",
+  weights: "WEIGHT_CALIBRATION",
+  policies: "ACTIVE_POLICIES",
+  profile: "ACCOUNT_PROFILE",
 };
 
 export default function Breadcrumbs({ items }) {
@@ -18,28 +26,23 @@ export default function Breadcrumbs({ items }) {
   if (crumbs.length <= 1) return null;
 
   return (
-    <nav aria-label="Breadcrumb" style={{ marginBottom: 16 }}>
-      <ol style={{ display: "flex", alignItems: "center", gap: 6, listStyle: "none", margin: 0, padding: 0 }}>
+    <nav aria-label="Breadcrumb" className="mb-4">
+      <ol className="flex items-center gap-2 list-none m-0 p-0 font-mono text-[11px]">
         {crumbs.map((crumb, i) => {
           const isLast = i === crumbs.length - 1;
           return (
-            <li key={crumb.href || i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <li key={crumb.href || i} className="flex items-center gap-2">
               {i > 0 && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="2" strokeLinecap="round">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
+                <span className="text-slate-600 select-none">/</span>
               )}
               {isLast ? (
-                <span style={{ fontSize: 13, fontWeight: 500, color: "#fafafa" }}>
-                  {crumb.label}
+                <span className="text-blue-400 font-bold tracking-wider">
+                  [{crumb.label}]
                 </span>
               ) : (
                 <Link
                   href={crumb.href}
-                  className="no-underline"
-                  style={{ fontSize: 13, color: "#71717a", transition: "color 0.15s" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#a1a1aa")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#71717a")}
+                  className="no-underline text-slate-500 hover:text-slate-300 transition-colors tracking-wide"
                 >
                   {crumb.label}
                 </Link>
@@ -60,7 +63,9 @@ function buildCrumbs(pathname) {
   let path = "";
   for (const part of parts) {
     path += `/${part}`;
-    const label = LABEL_MAP[part] || (part.length === 24 ? "Details" : part.charAt(0).toUpperCase() + part.slice(1));
+    const label =
+      LABEL_MAP[part] ||
+      (part.length === 24 ? "REF_" + part.slice(-6).toUpperCase() : part.toUpperCase());
     crumbs.push({ label, href: path });
   }
 

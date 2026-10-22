@@ -75,7 +75,6 @@ export default function HistoryPage() {
       <Breadcrumbs />
 
       <FadeUp>
-      <FadeUp>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
