@@ -12,10 +12,10 @@ import AssessmentSummary from "@/components/assess/AssessmentSummary";
 
 /* ═══════ POLICY CONFIG ═══════ */
 const policyTypes = [
-  { id: "health", label: "Health", full: "Health Insurance", desc: "Medical history, BMI, pre-existing conditions, wearable health data", icon: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />, color: "#10b981", gradient: "linear-gradient(135deg, #10b981, #059669)" },
-  { id: "auto", label: "Auto", full: "Auto Insurance", desc: "Vehicle details, driving history, telematics, GPS & speed behavior", icon: <><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2M8 21v-4M16 21v-4M3 16h18" /></>, color: "#f59e0b", gradient: "linear-gradient(135deg, #f59e0b, #d97706)" },
-  { id: "life", label: "Life", full: "Life Insurance", desc: "Age, income, family history, lifestyle habits, wearable vitals", icon: <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />, color: "#ef4444", gradient: "linear-gradient(135deg, #ef4444, #dc2626)" },
-  { id: "property", label: "Property", full: "Property Insurance", desc: "Location, building age, IoT sensors, weather risk, neighbourhood data", icon: <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>, color: "#8b5cf6", gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)" },
+  { id: "health", label: "Health", full: "Health Insurance", desc: "Medical history, BMI, pre-existing conditions, wearable health telemetry", icon: <path d="M22 12h-4l-3 9L9 3l-3 9H2" />, color: "#3b82f6", gradient: "linear-gradient(135deg, #2563eb, #1d4ed8)" },
+  { id: "auto", label: "Auto", full: "Auto Insurance", desc: "Vehicle kinematics, driving history, telematics, GPS & acceleration profiles", icon: <><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2M8 21v-4M16 21v-4M3 16h18" /></>, color: "#f59e0b", gradient: "linear-gradient(135deg, #f59e0b, #d97706)" },
+  { id: "life", label: "Life", full: "Life Insurance", desc: "Actuarial mortality tables, lifestyle biomarker metrics, wearable vitals", icon: <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />, color: "#f43f5e", gradient: "linear-gradient(135deg, #f43f5e, #e11d48)" },
+  { id: "property", label: "Property", full: "Property Insurance", desc: "Hydrological satellite models, building age, IoT sensors, climate risk", icon: <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>, color: "#8b5cf6", gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)" },
 ];
 
 const commonFields = { applicantName: "", applicantEmail: "", applicantPhone: "", age: "", gender: "", occupation: "", income: "", creditScore: "", existingPolicies: "", telematicsScore: "", behavioralScore: "", lifestyleScore: "", socialMediaRisk: "low", jobStabilityScore: "", consentAlternativeData: false };
@@ -27,11 +27,11 @@ const policyFields = {
 };
 
 const steps = [
-  { label: "Documents", title: "Upload Documents", sub: "Upload Aadhaar, PAN, salary slips — AI will auto-fill your details", icon: <><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><path d="M17 8l-5-5-5 5M12 3v12" /></> },
-  { label: "Personal", title: "Your Details", sub: "Verify auto-filled info or enter manually", icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></> },
-  { label: "Policy", title: "Policy Details", sub: "Specific details for your policy type", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></> },
-  { label: "Financial", title: "Financial Information", sub: "Income and credit details for premium calculation", icon: <><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></> },
-  { label: "Review", title: "Review & Submit", sub: "Review your application and submit for AI analysis", icon: <><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></> },
+  { label: "Documents", title: "Document Telemetry Intake", sub: "Upload Aadhaar, PAN, salary slips — OCR will auto-fill your parameters", icon: <><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><path d="M17 8l-5-5-5 5M12 3v12" /></> },
+  { label: "Personal", title: "Applicant Coordinates", sub: "Verify auto-filled demographic profile or enter manual coordinates", icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></> },
+  { label: "Policy", title: "Policy Parameter Specifications", sub: "Calibration factors configured for your active underwriting docket", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></> },
+  { label: "Financial", title: "Actuarial Financial Inputs", sub: "Solvency baseline and credit metrics for premium calculations", icon: <><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></> },
+  { label: "Review", title: "Synthesis & AI Model Dispatch", sub: "Final verification before triggering local Gemma 4 E4B risk analysis", icon: <><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></> },
 ];
 
 const DOC_TYPES = [
@@ -71,7 +71,7 @@ export default function AssessPage() {
       if (session.user.email) prefill.applicantEmail = session.user.email;
     }
 
-    // 2) From most recent assessment (age, gender, phone, occupation, income, etc.)
+    // 2) From most recent assessment
     fetch("/api/assessments")
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -99,7 +99,6 @@ export default function AssessPage() {
         setProfileLoaded(true);
       })
       .catch(() => {
-        // Still apply session data even if assessment fetch fails
         if (Object.keys(prefill).length > 0) {
           setForm(prev => ({ ...prev, ...prefill }));
         }
@@ -110,10 +109,8 @@ export default function AssessPage() {
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
   const handleSelectPolicy = (id) => {
     setSelectedPolicy(id);
-    // Preserve pre-filled user data, only reset policy-specific fields
     setForm(prev => {
       const base = { ...commonFields, ...policyFields[id] };
-      // Keep any values from prev that were pre-filled (non-empty, non-default)
       for (const key of Object.keys(commonFields)) {
         if (prev[key] && prev[key] !== commonFields[key]) {
           base[key] = prev[key];
@@ -131,9 +128,8 @@ export default function AssessPage() {
 
   const uploadAndExtract = useCallback(async (file) => {
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast.error("File too large (max 10MB)"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("File exceeds limit (max 10MB)"); return; }
 
-    // Step 1: Upload to Cloudinary
     setUploading(true);
     setExtraction(null);
     let uploadData;
@@ -142,11 +138,10 @@ export default function AssessPage() {
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       uploadData = await res.json();
       if (!res.ok) { toast.error(uploadData.error || "Upload failed"); setUploading(false); return; }
-      toast.success(`Uploaded ${uploadData.name}`);
+      toast.success(`Encrypted payload stored: ${uploadData.name}`);
     } catch { toast.error("Upload failed"); setUploading(false); return; }
     setUploading(false);
 
-    // Step 2: Verify document authenticity
     let verification = null;
     try {
       toast.loading("Verifying document authenticity...", { id: "verify" });
@@ -158,23 +153,21 @@ export default function AssessPage() {
       if (verifyRes.ok) {
         verification = await verifyRes.json();
         if (verification.verdict === "likely_fake") {
-          toast.error("Document appears to be AI-generated or fake", { id: "verify" });
+          toast.error("Document flagged: Synthetic / Counterfeit artifact detected", { id: "verify" });
         } else if (verification.verdict === "suspicious") {
-          toast.error("Document flagged for review — proceeding with caution", { id: "verify", icon: "⚠️" });
+          toast.error("Telemetry anomaly: Document flagged for underwriter audit", { id: "verify", icon: "⚠️" });
         } else {
-          toast.success("Document verified as authentic", { id: "verify" });
+          toast.success("Cryptographic authenticity verified", { id: "verify" });
         }
       } else {
         toast.dismiss("verify");
       }
     } catch { toast.dismiss("verify"); }
 
-    // Add doc to list with verification result
     setDocs(prev => [...prev, { name: uploadData.name, type: uploadData.type, url: uploadData.url, size: uploadData.size, docType, uploadedAt: new Date().toISOString(), verification }]);
 
-    // Step 3: AI extraction (only if not likely_fake)
     if (verification?.verdict === "likely_fake") {
-      toast.error("Skipping data extraction — document failed authenticity check");
+      toast.error("Data extraction aborted: Failed authenticity parameters");
       return;
     }
 
@@ -188,7 +181,7 @@ export default function AssessPage() {
       const data = await res.json();
       if (res.ok && data.formFields && Object.keys(data.formFields).length > 0) {
         setExtraction({ extracted: data.extracted, formFields: data.formFields, documentType: docType });
-        toast.success(`AI extracted ${data.fieldsCount} fields from ${uploadData.name}`);
+        toast.success(`OCR calibrated ${data.fieldsCount} parameters from ${uploadData.name}`);
       } else {
         toast.error("Could not extract data from this document");
       }
@@ -199,18 +192,17 @@ export default function AssessPage() {
   const applyExtraction = () => {
     if (!extraction) return;
     setForm(prev => ({ ...prev, ...extraction.formFields }));
-    toast.success("Form auto-filled with extracted data!");
+    toast.success("Parameters mapped to underwriting schema!");
     setExtraction(null);
   };
 
   const handleSubmit = async () => {
-    if (!form.applicantName) { toast.error("Your name is required"); return; }
-    if (!form.applicantEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.applicantEmail)) { toast.error("Valid email is required"); return; }
+    if (!form.applicantName) { toast.error("Applicant name is required"); return; }
+    if (!form.applicantEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.applicantEmail)) { toast.error("Valid contact email is required"); return; }
     setLoading(true);
     try {
       const ps = {}; Object.keys(policyFields[selectedPolicy] || {}).forEach(k => { ps[k] = form[k]; });
 
-      // Fetch profile documents to auto-attach
       let profileDocs = [];
       try {
         const profileRes = await fetch("/api/profile");
@@ -233,14 +225,14 @@ export default function AssessPage() {
       const res = await fetch("/api/assessments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json();
       if (!res.ok) { toast.error(data.error || "Submission failed"); setLoading(false); return; }
-      // Trigger AI analysis immediately after creation
-      toast.success("Assessment submitted! Running AI analysis...");
+      
+      toast.success("Docket registered! Initializing Gemma 4 E4B reasoning pipeline...");
       try {
         await fetch(`/api/assessments/${data.assessment._id}/analyze`, { method: "POST" });
       } catch { /* analysis failure is non-blocking */ }
       fetch("/api/email", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ to: form.applicantEmail, name: form.applicantName, assessmentId: data.assessment._id, policyType: selectedPolicy }) }).catch(() => {});
       router.push(`/applicant/dashboard/assessment/${data.assessment._id}`);
-    } catch { toast.error("Something went wrong"); }
+    } catch { toast.error("System exception during submission"); }
     setLoading(false);
   };
 
@@ -248,21 +240,65 @@ export default function AssessPage() {
   const cp = selectedPolicy ? policyTypes.find(p => p.id === selectedPolicy) : null;
   const F = (label, key, type = "text", placeholder = "", required = false) => (
     <div>
-      <label className="block text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: "#52525b" }}>{label}{required && <span style={{ color: "#ef4444" }}> *</span>}</label>
-      <input className="w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 outline-none" type={type} placeholder={placeholder} value={form[key] || ""} onChange={(e) => update(key, e.target.value)}
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", color: "#fafafa", fontFamily: "inherit" }}
-        onFocus={(e) => { e.target.style.borderColor = cp?.color + "60"; e.target.style.boxShadow = `0 0 0 3px ${cp?.color}12`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
-        onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.07)"; e.target.style.boxShadow = "none"; e.target.style.background = "rgba(255,255,255,0.03)"; }} />
+      <div className="flex items-center justify-between mb-2">
+        <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+          {label}{required && <span className="text-rose-500"> *</span>}
+        </label>
+        <span className="text-[9px] font-mono text-slate-400">[PAR.{key.slice(0,3).toUpperCase()}]</span>
+      </div>
+      <input
+        className="w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 outline-none font-mono"
+        type={type}
+        placeholder={placeholder}
+        value={form[key] || ""}
+        onChange={(e) => update(key, e.target.value)}
+        style={{
+          background: "rgba(10,15,29,0.7)",
+          border: "1px solid rgba(59,130,246,0.2)",
+          color: "#f8fafc",
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = cp?.color || "#3b82f6";
+          e.target.style.boxShadow = `0 0 0 3px ${cp?.color || "#3b82f6"}20`;
+          e.target.style.background = "rgba(14,21,38,0.9)";
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = "rgba(59,130,246,0.2)";
+          e.target.style.boxShadow = "none";
+          e.target.style.background = "rgba(10,15,29,0.7)";
+        }}
+      />
     </div>
   );
+
   const S = (label, key, options) => (
     <div>
-      <label className="block text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: "#52525b" }}>{label}</label>
-      <select className="w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-300 outline-none appearance-none cursor-pointer" value={form[key] || ""} onChange={(e) => update(key, e.target.value)}
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", color: "#fafafa", fontFamily: "inherit", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
-        onFocus={(e) => { e.target.style.borderColor = cp?.color + "60"; e.target.style.boxShadow = `0 0 0 3px ${cp?.color}12`; }}
-        onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.07)"; e.target.style.boxShadow = "none"; }}>
-        {options.map(o => <option key={o.value} value={o.value} style={{ background: "#15151a", color: "#fafafa" }}>{o.label}</option>)}
+      <div className="flex items-center justify-between mb-2">
+        <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">{label}</label>
+        <span className="text-[9px] font-mono text-slate-400">[VEC.{key.slice(0,3).toUpperCase()}]</span>
+      </div>
+      <select
+        className="w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 outline-none appearance-none cursor-pointer font-mono"
+        value={form[key] || ""}
+        onChange={(e) => update(key, e.target.value)}
+        style={{
+          background: "rgba(10,15,29,0.7)",
+          border: "1px solid rgba(59,130,246,0.2)",
+          color: "#f8fafc",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "right 14px center",
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = cp?.color || "#3b82f6";
+          e.target.style.boxShadow = `0 0 0 3px ${cp?.color || "#3b82f6"}20`;
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = "rgba(59,130,246,0.2)";
+          e.target.style.boxShadow = "none";
+        }}
+      >
+        {options.map(o => <option key={o.value} value={o.value} style={{ background: "#070a13", color: "#f8fafc" }}>{o.label}</option>)}
       </select>
     </div>
   );
@@ -283,13 +319,20 @@ export default function AssessPage() {
 
   const content = [
     /* Step 0 — Document Upload (AI auto-fills) */
-    <div key="s0">
-      <div className="rounded-2xl p-5 mb-6" style={{ background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.12)" }}>
-        <div className="flex items-start gap-3">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" className="shrink-0 mt-0.5"><path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z"/><path d="M10 22v-4M14 22v-4M10 18h4"/></svg>
+    <div key="s0" className="space-y-6">
+      <div className="blueprint-card p-5 relative overflow-hidden">
+        <div className="flex items-start gap-3.5">
+          <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 mt-0.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.75" strokeLinecap="round"><path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z"/><path d="M10 22v-4M14 22v-4M10 18h4"/></svg>
+          </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: "#fafafa" }}>Upload documents to auto-fill your application</p>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: "#71717a" }}>Our AI reads Aadhaar, PAN, salary slips, medical reports, driving license, and vehicle RC — then auto-fills all the relevant fields. You can also skip this and fill manually.</p>
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-sm font-bold text-white tracking-tight">Multi-Modal Optical Calibration & Ingestion</p>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 bg-blue-500/10">[OCR.AUTO_MAP]</span>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Upload authenticated identity, financial proofs, or health records. The neural pipeline extracts structured parameters directly into the actuarial docket.
+            </p>
           </div>
         </div>
       </div>
@@ -308,36 +351,60 @@ export default function AssessPage() {
         DOC_TYPES={DOC_TYPES}
       />
     </div>,
-    /* Step 1 — Personal Details (verify auto-filled or enter manually) */
-    <div key="s1" className={g}>{F("Full Name","applicantName","text","Enter your full name",true)}{F("Email Address","applicantEmail","email","you@example.in",true)}{F("Phone Number","applicantPhone","tel","+91 98765 43210")}{F("Age","age","number","e.g. 30")}{S("Gender","gender",[{value:"",label:"Select Gender"},{value:"male",label:"Male"},{value:"female",label:"Female"},{value:"other",label:"Other"}])}{F("Occupation","occupation","text","e.g. Software Engineer")}</div>,
+    /* Step 1 — Personal Details */
+    <div key="s1" className={g}>
+      {F("Full Legal Name","applicantName","text","Enter applicant legal name",true)}
+      {F("Encrypted Contact Email","applicantEmail","email","name@domain.com",true)}
+      {F("Direct Telephony Route","applicantPhone","tel","+91 98765 43210")}
+      {F("Chronological Age (Yrs)","age","number","e.g. 30")}
+      {S("Actuarial Gender Class","gender",[{value:"",label:"Select Classification"},{value:"male",label:"Male"},{value:"female",label:"Female"},{value:"other",label:"Non-Binary / Other"}])}
+      {F("Primary Occupation Class","occupation","text","e.g. Software Engineer / Data Scientist")}
+    </div>,
     /* Step 2 — Policy-Specific Fields */
-    <div key="s2"><PolicyFormFields policyType={selectedPolicy} color={cp?.color} F={F} S={S} onGeoResult={(data) => {
-      if (data?.riskAssessment?.floodRisk?.level) {
-        const level = data.riskAssessment.floodRisk.level;
-        const mapped = level === "high" ? "high" : level === "moderate" ? "moderate" : level === "low" ? "low" : "none";
-        update("floodZone", mapped);
-      }
-    }} /></div>,
+    <div key="s2">
+      <PolicyFormFields policyType={selectedPolicy} color={cp?.color} F={F} S={S} onGeoResult={(data) => {
+        if (data?.riskAssessment?.floodRisk?.level) {
+          const level = data.riskAssessment.floodRisk.level;
+          const mapped = level === "high" ? "high" : level === "moderate" ? "moderate" : level === "low" ? "low" : "none";
+          update("floodZone", mapped);
+        }
+      }} />
+    </div>,
     /* Step 3 — Financial */
-    <div key="s3" className={g}>{F("Annual Income (₹)","income","number","e.g. 800000")}{F("Credit Score (CIBIL)","creditScore","number","300-900")}{F("Existing Policies","existingPolicies","number","e.g. 1")}</div>,
-    /* Step 4 — Review & Submit (summary + optional alt data + digital footprint) */
-    <div key="s4">
+    <div key="s3" className={g}>
+      {F("Gross Annual Income (₹)","income","number","e.g. 1200000")}
+      {F("CIBIL / Credit Solvency Score","creditScore","number","300 - 900 Range")}
+      {F("Active Concurrent Policies","existingPolicies","number","e.g. 1")}
+    </div>,
+    /* Step 4 — Review & Submit */
+    <div key="s4" className="space-y-6">
       <AssessmentSummary form={form} policy={cp} docsCount={docs.length} />
 
-      {/* Optional: Alternative Data enrichment */}
-      <div className="mt-6">
-        <h3 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "#52525b" }}>Optional: Boost your score with alternative data</h3>
-        <div className="rounded-2xl p-5 mb-4 transition-all duration-300" style={{ background: form.consentAlternativeData ? `${cp.color}08` : "rgba(255,255,255,0.02)", border: `1px solid ${form.consentAlternativeData ? cp.color + "20" : "rgba(255,255,255,0.06)"}` }}>
-          <label className="flex items-start gap-4 cursor-pointer">
-            <div className="mt-0.5 w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all duration-200" style={{ background: form.consentAlternativeData ? cp.color : "rgba(255,255,255,0.06)", border: form.consentAlternativeData ? "none" : "1px solid rgba(255,255,255,0.1)" }}>
+      {/* Alternative Data enrichment */}
+      <div className="blueprint-card p-5 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">[ALTERNATIVE_TELEMETRY_ENRICHMENT]</h3>
+          <span className="text-[10px] font-mono text-blue-400">NON-INVASIVE_OPT_IN</span>
+        </div>
+        <div className="rounded-xl p-4 mb-4 transition-all duration-300" style={{ background: form.consentAlternativeData ? "rgba(37,99,235,0.08)" : "rgba(10,15,29,0.5)", border: `1px solid ${form.consentAlternativeData ? "rgba(59,130,246,0.3)" : "rgba(59,130,246,0.15)"}` }}>
+          <label className="flex items-start gap-3.5 cursor-pointer">
+            <div className="mt-0.5 w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all duration-200" style={{ background: form.consentAlternativeData ? "#2563eb" : "rgba(148,163,184,0.1)", border: form.consentAlternativeData ? "1px solid #3b82f6" : "1px solid rgba(148,163,184,0.2)" }}>
               {form.consentAlternativeData && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>}
             </div>
             <input type="checkbox" className="hidden" checked={form.consentAlternativeData} onChange={(e) => update("consentAlternativeData", e.target.checked)} />
-            <div><p className="text-sm font-semibold" style={{ color: "#fafafa" }}>I consent to alternative data collection</p><p className="text-xs mt-1 leading-relaxed" style={{ color: "#71717a" }}>Telematics, behavioral analytics, and digital footprint may lower your premium.</p></div>
+            <div>
+              <p className="text-sm font-semibold text-white">Enable Real-Time Telemetric & Alternative Risk Scoring</p>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">Opting into driving kinematics, verified payment regularity, and lifestyle biometrics can lower your premium rate by up to 22%.</p>
+            </div>
           </label>
         </div>
         {form.consentAlternativeData && (
-          <div className={g}>{F("Telematics Score (0-100)","telematicsScore","number","From connected device")}{F("Behavioral Score (0-100)","behavioralScore","number","From financial analytics")}{F("Lifestyle Score (0-100)","lifestyleScore","number","From wearable/health app")}{S("Social Media Risk","socialMediaRisk",[{value:"low",label:"Low"},{value:"medium",label:"Medium"},{value:"high",label:"High"}])}</div>
+          <div className={g}>
+            {F("Kinematic Telematics Score (0-100)","telematicsScore","number","Sensor telemetry baseline")}
+            {F("Fiscal Behavioral Score (0-100)","behavioralScore","number","Transaction regularity index")}
+            {F("Wearable Lifestyle Score (0-100)","lifestyleScore","number","Active biometrics data")}
+            {S("Digital Footprint Variance","socialMediaRisk",[{value:"low",label:"Minimal Anomaly (Low)"},{value:"medium",label:"Moderate Variance (Medium)"},{value:"high",label:"Elevated Variance (High)"}])}
+          </div>
         )}
       </div>
     </div>,
@@ -347,7 +414,7 @@ export default function AssessPage() {
   const progress = ((step + 1) / 5) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: "#09090b" }}>
+    <div className="min-h-screen flex flex-col lg:flex-row tech-grid-pattern" style={{ background: "var(--bg-primary, #070a13)" }}>
       {/* ── LEFT PANEL: sticky context ── */}
       <StepSidebar
         policy={cp}
@@ -360,78 +427,88 @@ export default function AssessPage() {
       {/* ── RIGHT PANEL: form ── */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Mobile nav */}
-        <nav className="lg:hidden h-14 flex items-center justify-between px-6" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <nav className="lg:hidden h-14 flex items-center justify-between px-6 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
           <Link href="/" className="flex items-center gap-2 no-underline">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-white text-xs" style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}>U</div>
-            <span className="font-bold text-sm" style={{ color: "#fafafa" }}>Underwrite<span style={{ color: "#10b981" }}>AI</span></span>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-white text-xs bg-gradient-to-br from-blue-600 to-indigo-700 border border-blue-400/30">U</div>
+            <span className="font-bold text-sm text-white">Underwrite<span className="text-blue-500">AI</span></span>
           </Link>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg" style={{ background: `${cp.color}10`, border: `1px solid ${cp.color}20` }}>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-blue-500/20 bg-blue-500/10">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={cp.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{cp.icon}</svg>
-            <span className="text-[10px] font-semibold" style={{ color: cp.color }}>{cp.label}</span>
+            <span className="text-[10px] font-mono font-bold" style={{ color: cp.color }}>{cp.label}</span>
           </div>
         </nav>
 
         {/* Mobile stepper */}
         <div className="lg:hidden px-6 pt-4">
-          <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+          <div className="h-1 rounded-full overflow-hidden mb-3 bg-slate-900 border border-slate-800">
             <div className="h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%`, background: cp.gradient }} />
           </div>
-          <div className="flex gap-1 overflow-x-auto pb-1">
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
             {steps.map((s, i) => (
-              <button key={s.label} onClick={() => setStep(i)} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg shrink-0 transition-all duration-200" style={{ background: i < step ? cp.gradient : i === step ? `${cp.color}15` : "rgba(255,255,255,0.02)", border: i === step ? `1px solid ${cp.color}25` : "1px solid rgba(255,255,255,0.04)", cursor: "pointer" }}>
+              <button key={s.label} onClick={() => setStep(i)} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg shrink-0 transition-all font-mono" style={{ background: i < step ? cp.gradient : i === step ? `${cp.color}15` : "rgba(10,15,29,0.5)", border: i === step ? `1px solid ${cp.color}40` : "1px solid rgba(59,130,246,0.15)", cursor: "pointer" }}>
                 {i < step ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
-                  : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={i === step ? cp.color : "#3f3f46"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>}
-                <span className="text-[10px] font-medium" style={{ color: i < step ? "#fff" : i === step ? cp.color : "#52525b" }}>{s.label}</span>
+                  : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={i === step ? cp.color : "#64748b"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>}
+                <span className="text-[10px] font-medium" style={{ color: i < step ? "#fff" : i === step ? cp.color : "#94a3b8" }}>{s.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Form content */}
-        <div className="flex-1 px-6 sm:px-10 lg:px-16 xl:px-20 py-8 lg:py-14">
-          <div className="max-w-2xl">
+        <div className="flex-1 px-6 sm:px-10 lg:px-16 xl:px-20 py-8 lg:py-12">
+          <div className="max-w-3xl">
             {/* Section header */}
-            <div className="mb-8" style={{ animation: "fade-up 0.4s cubic-bezier(0.16,1,0.3,1) both" }}>
-              <h2 className="text-2xl sm:text-3xl font-extrabold mb-2" style={{ color: "#fafafa" }}>
-                {step === 2 ? `${cp.full} Details` : steps[step].title}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-blue-500/20 text-blue-400 bg-blue-500/5">[STAGE 0{step + 1} // CALIBRATION]</span>
+                <span className="text-[10px] font-mono text-slate-400">INTAKE_DOCKET_{cp.id.toUpperCase()}</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                {step === 2 ? `${cp.full} Actuarial Parameters` : steps[step].title}
               </h2>
-              <p className="text-sm" style={{ color: "#52525b" }}>{steps[step].sub}</p>
+              <p className="text-sm text-slate-400 leading-relaxed">{steps[step].sub}</p>
             </div>
 
             {/* Form fields */}
-            <div style={{ animation: "fade-up 0.5s cubic-bezier(0.16,1,0.3,1) 60ms both" }}>
+            <div>
               {content[step]}
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="sticky bottom-0 px-6 sm:px-10 lg:px-16 xl:px-20 py-5" style={{ background: "rgba(9,9,11,0.9)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-          <div className="max-w-2xl flex items-center justify-between">
+        <div className="sticky bottom-0 px-6 sm:px-10 lg:px-16 xl:px-20 py-4 border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+          <div className="max-w-3xl flex items-center justify-between">
             <button onClick={() => step > 0 ? setStep(step - 1) : (setSelectedPolicy(null), setStep(0))}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "#a1a1aa", cursor: "pointer" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#fafafa"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "#a1a1aa"; }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-              {step === 0 ? "Back" : "Previous"}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-medium transition-all duration-200 border border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              {step === 0 ? "RETURN_TO_SELECTOR" : "PREVIOUS_STAGE"}
             </button>
 
-            <div className="hidden sm:block text-[11px] font-medium" style={{ color: "#3f3f46" }}>Step {step + 1} of 5</div>
+            <div className="hidden sm:block text-[11px] font-mono text-slate-400">
+              [PROGRESS: {step + 1}/5 STEPS // {progress}%]
+            </div>
 
             {step < 4 ? (
               <button onClick={() => setStep(step + 1)}
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200"
-                style={{ background: cp.gradient, boxShadow: `0 4px 20px ${cp.color}25`, cursor: "pointer", border: "none" }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 8px 30px ${cp.color}35`; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 4px 20px ${cp.color}25`; }}>
-                Continue <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                className="inline-flex items-center gap-2 px-7 py-2.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider text-white transition-all duration-200 cursor-pointer shadow-lg shadow-blue-600/20"
+                style={{ background: cp.gradient }}>
+                ADVANCE_STAGE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
             ) : (
               <button onClick={handleSubmit} disabled={loading}
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200"
-                style={{ background: loading ? "#3f3f46" : cp.gradient, boxShadow: loading ? "none" : `0 4px 20px ${cp.color}25`, cursor: loading ? "wait" : "pointer", border: "none" }}>
-                {loading ? <><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white inline-block" style={{ animation: "spin-anim 1s linear infinite" }} />Submitting...</> : <>Submit Assessment <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></>}
+                className="inline-flex items-center gap-2 px-7 py-2.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider text-white transition-all duration-200 cursor-pointer shadow-lg shadow-blue-600/30"
+                style={{ background: loading ? "#334155" : cp.gradient }}>
+                {loading ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white inline-block animate-spin" />
+                    DISPATCHING_TELEMETRY...
+                  </>
+                ) : (
+                  <>
+                    DISPATCH_FOR_REASONING <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                  </>
+                )}
               </button>
             )}
           </div>

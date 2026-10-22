@@ -30,15 +30,15 @@ export default function AdminDashboardLayout({ children }) {
 
   return (
     <MotionProvider>
-      <div className="min-h-screen relative" style={{ background: "#09090b" }}>
+      <div className="min-h-screen relative" style={{ background: "var(--bg-primary, #070A13)" }}>
+        <div className="fixed inset-0 tech-grid-pattern opacity-35 pointer-events-none z-0" />
         <MouseGlow />
         <Sidebar />
         <div
-          className="lg:ml-[260px] flex flex-col min-h-screen relative"
+          className="lg:ml-[260px] flex flex-col min-h-screen relative z-10"
           style={{
             marginRight: chatOpen ? 480 : 0,
             transition: "margin-right 0.45s cubic-bezier(0.23, 1, 0.32, 1)",
-            zIndex: 1,
           }}
         >
           <DashboardNav />

@@ -33,7 +33,7 @@ function AnimatedNumber({ value, color }) {
   );
 }
 
-const PC = { health: "#10b981", auto: "#f59e0b", life: "#a78bfa", property: "#60a5fa" };
+const PC = { health: "#3B82F6", auto: "#06B6D4", life: "#8B5CF6", property: "#EC4899" };
 const PL = { health: "Health", auto: "Auto", life: "Life", property: "Property" };
 
 function timeAgo(d) {
@@ -85,44 +85,49 @@ export default function DashboardPage() {
 
     return (
       <div>
-        {/* Header */}
+        {/* Header with technical badge */}
         <FadeUp>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
             <div>
-              <p className="text-sm mb-1" style={{ color: "#52525b" }}>{greeting}</p>
-              <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#fafafa" }}>{firstName}<span style={{ color: "#10b981" }}>.</span></h1>
-              <p className="text-sm mt-1" style={{ color: "#71717a" }}>
-                Underwriter Dashboard
-                {!loading && <span style={{ color: "#52525b" }}> &middot; {thisWeek} new this week</span>}
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-mono text-blue-300 border border-blue-500/20 bg-blue-500/10 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>[ACTUARIAL_COCKPIT · ACTIVE]</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                {greeting}, {firstName}<span style={{ color: "#60A5FA" }}>.</span>
+              </h1>
+              <p className="text-xs font-mono mt-1 text-slate-400">
+                Risk Engine Calibration &middot; Local Gemma 4 E4B
+                {!loading && <span className="text-blue-400"> &middot; {thisWeek} intakes this cycle</span>}
               </p>
             </div>
             <div className="flex gap-2">
-              <Link href="/applicant/dashboard/history" className="btn-primary no-underline text-xs py-2 px-4 inline-flex items-center gap-2">
+              <Link href="/applicant/dashboard/history" className="btn-primary no-underline text-xs font-mono py-2 px-4 inline-flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 104 0M9 5a2 2 0 004 0"/></svg>
-                Full Review Queue
+                <span>OPEN REVIEW QUEUE</span>
               </Link>
             </div>
           </div>
         </FadeUp>
 
-        {/* Queue Stats — 4 cards */}
+        {/* Queue Stats — 4 Ordivalabs Blueprint Cards */}
         <StaggerGrid className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" delay={0.1}>
           {[
-            { label: "Pending Review", value: pending.length, color: "#f59e0b", icon: <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></> },
-            { label: "High Risk", value: highRisk.length, color: "#ef4444", icon: <path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> },
-            { label: "Referred", value: referred.length, color: "#a78bfa", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></> },
-            { label: "Decisions Made", value: acted.length, color: "#10b981", icon: <><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></> },
+            { label: "Pending Adjudication", value: pending.length, color: "#F59E0B", icon: <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>, tag: "IN_QUEUE" },
+            { label: "Elevated Risk", value: highRisk.length, color: "#F43F5E", icon: <path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />, tag: "CRITICAL" },
+            { label: "Referred Cases", value: referred.length, color: "#8B5CF6", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></>, tag: "ESCALATED" },
+            { label: "Decisions Settled", value: acted.length, color: "#3B82F6", icon: <><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></>, tag: "EXECUTED" },
           ].map(s => (
             <StaggerItem key={s.label}>
-              <div className="glass-card p-5 relative overflow-hidden">
-                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full pointer-events-none" style={{ background: `${s.color}08`, filter: "blur(20px)" }} />
-                <div className="flex justify-between items-start relative">
-                  <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wider mb-2" style={{ color: "#52525b" }}>{s.label}</p>
-                    {loading ? <div className="h-7 w-12 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /> : <AnimatedNumber value={s.value} color={s.color} />}
-                  </div>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${s.color}10` }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
+              <div className="blueprint-card p-5 relative overflow-hidden">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400">{s.label}</span>
+                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded" style={{ background: `${s.color}18`, color: s.color }}>{s.tag}</span>
+                </div>
+                <div className="flex justify-between items-end">
+                  {loading ? <div className="h-7 w-12 rounded bg-white/5 animate-pulse" /> : <AnimatedNumber value={s.value} color={s.color} />}
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: `${s.color}15`, border: `1px solid ${s.color}30` }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
                   </div>
                 </div>
               </div>
@@ -134,21 +139,24 @@ export default function DashboardPage() {
         <FadeUp delay={0.25}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {/* Performance metrics */}
-          <div className="lg:col-span-1 glass-card p-5">
-            <h3 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#52525b" }}>Performance</h3>
-            <div className="space-y-4">
+          <div className="lg:col-span-1 blueprint-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400">[ACTUARIAL_PRECISION]</h3>
+              <span className="text-[10px] font-mono text-blue-400">BENCHMARK</span>
+            </div>
+            <div className="space-y-4 font-mono">
               {[
-                { label: "Avg Risk Score", value: stats?.avgRisk ? Math.round(stats.avgRisk) : 0, max: 100, color: (stats?.avgRisk || 0) > 60 ? "#ef4444" : (stats?.avgRisk || 0) > 30 ? "#f59e0b" : "#10b981" },
-                { label: "Approval Rate", value: stats?.approvalRate ? Math.round(stats.approvalRate) : 0, max: 100, color: "#10b981" },
-                { label: "Avg Processing", value: stats?.avgTime ? `${(stats.avgTime / 1000).toFixed(1)}s` : "—", bar: false },
+                { label: "Mean Risk Index", value: stats?.avgRisk ? Math.round(stats.avgRisk) : 0, max: 100, color: (stats?.avgRisk || 0) > 60 ? "#F43F5E" : (stats?.avgRisk || 0) > 30 ? "#F59E0B" : "#3B82F6" },
+                { label: "Approval Ratio", value: stats?.approvalRate ? Math.round(stats.approvalRate) : 0, max: 100, color: "#3B82F6" },
+                { label: "Inference Latency", value: stats?.avgTime ? `${(stats.avgTime / 1000).toFixed(1)}s` : "—", bar: false },
               ].map(m => (
                 <div key={m.label}>
-                  <div className="flex justify-between mb-1.5">
-                    <span className="text-[11px] font-medium" style={{ color: "#71717a" }}>{m.label}</span>
-                    <span className="text-xs font-mono font-semibold" style={{ color: m.color || "#a1a1aa" }}>{m.bar === false ? m.value : `${m.value}%`}</span>
+                  <div className="flex justify-between mb-1.5 text-xs">
+                    <span className="text-slate-400">{m.label}</span>
+                    <span className="font-bold text-white">{m.bar === false ? m.value : `${m.value}%`}</span>
                   </div>
                   {m.bar !== false && (
-                    <div className="h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(37,99,235,0.15)" }}>
                       <div className="h-full rounded-full transition-all duration-1000" style={{ width: loading ? "0%" : `${Math.min(m.value, 100)}%`, background: m.color }} />
                     </div>
                   )}
@@ -158,10 +166,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Decision breakdown + donut + sparkline */}
-          <div className="lg:col-span-2 glass-card p-5">
+          <div className="lg:col-span-2 blueprint-card p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#52525b" }}>Decision Breakdown</h3>
-              <Link href="/admin/dashboard/analytics" className="text-[10px] no-underline font-medium" style={{ color: "#10b981" }}>Full Analytics &rarr;</Link>
+              <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400">[DECISION_VECTOR_DISTRIBUTION]</h3>
+              <Link href="/admin/dashboard/analytics" className="text-xs font-mono no-underline text-blue-400 hover:text-blue-300">Detailed Telemetry &rarr;</Link>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6 items-center">
@@ -174,18 +182,18 @@ export default function DashboardPage() {
 
               {/* Stats + sparkline */}
               <div className="flex-1 w-full">
-                <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-3 gap-3 mb-4 font-mono">
                   {[
-                    { label: "Approved", count: stats?.approved || 0, total: stats?.total || 1, color: "#10b981" },
-                    { label: "Referred", count: stats?.referred || 0, total: stats?.total || 1, color: "#f59e0b" },
-                    { label: "Declined", count: stats?.declined || 0, total: stats?.total || 1, color: "#ef4444" },
+                    { label: "Approved", count: stats?.approved || 0, total: stats?.total || 1, color: "#3B82F6" },
+                    { label: "Referred", count: stats?.referred || 0, total: stats?.total || 1, color: "#F59E0B" },
+                    { label: "Declined", count: stats?.declined || 0, total: stats?.total || 1, color: "#F43F5E" },
                   ].map(d => {
                     const pct = d.total > 0 ? Math.round((d.count / d.total) * 100) : 0;
                     return (
-                      <div key={d.label} className="rounded-xl p-3 text-center" style={{ background: `${d.color}06`, border: `1px solid ${d.color}12` }}>
-                        <span className="font-mono text-xl font-bold" style={{ color: d.color }}>{loading ? "—" : d.count}</span>
-                        <p className="text-[10px] font-semibold uppercase tracking-wider mt-0.5" style={{ color: "#71717a" }}>{d.label}</p>
-                        <p className="text-[9px] font-mono" style={{ color: "#52525b" }}>{pct}%</p>
+                      <div key={d.label} className="rounded-lg p-3 text-center" style={{ background: "rgba(10,15,29,0.7)", border: `1px solid ${d.color}25` }}>
+                        <span className="text-xl font-bold font-mono" style={{ color: d.color }}>{loading ? "—" : d.count}</span>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider mt-0.5 text-slate-400">{d.label}</p>
+                        <p className="text-[9px] text-slate-500">{pct}%</p>
                       </div>
                     );
                   })}
@@ -193,8 +201,8 @@ export default function DashboardPage() {
 
                 {/* Activity sparkline */}
                 {!loading && assessments.length > 0 && (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                    <span className="text-[10px] font-medium shrink-0" style={{ color: "#52525b" }}>7-day activity</span>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "rgba(10,15,29,0.6)", border: "1px solid rgba(37,99,235,0.18)" }}>
+                    <span className="text-[10px] font-mono text-slate-400 shrink-0">7-DAY INGESTION:</span>
                     <ActivitySparkline assessments={assessments} width={120} height={32} />
                   </div>
                 )}
@@ -202,13 +210,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Policy type mini-breakdown */}
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 font-mono">
               {["health", "auto", "life", "property"].map(pt => {
                 const count = assessments.filter(a => a.policyType === pt).length;
                 return (
-                  <div key={pt} className="flex-1 rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
+                  <div key={pt} className="flex-1 rounded-lg px-3 py-2 flex items-center justify-between" style={{ background: "rgba(10,15,29,0.5)", border: "1px solid rgba(37,99,235,0.18)" }}>
                     <span className="text-[10px] font-semibold uppercase" style={{ color: PC[pt] }}>{PL[pt]}</span>
-                    <span className="text-xs font-mono font-bold" style={{ color: "#a1a1aa" }}>{count}</span>
+                    <span className="text-xs font-bold text-slate-300">{count}</span>
                   </div>
                 );
               })}
@@ -219,47 +227,50 @@ export default function DashboardPage() {
 
         {/* Review Queue */}
         <FadeUp delay={0.35}>
-        <div className="glass-card overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="blueprint-card overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(37,99,235,0.15)" }}>
             <div className="flex items-center gap-3">
-              <h2 className="text-base font-semibold" style={{ color: "#fafafa" }}>Review Queue</h2>
+              <h2 className="text-sm font-bold font-mono text-white">[ACTUARIAL_REVIEW_QUEUE]</h2>
               {!loading && pending.length > 0 && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(245,158,11,0.12)", color: "#fbbf24" }}>{pending.length} pending</span>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(245,158,11,0.15)", color: "#FBBF24", border: "1px solid rgba(245,158,11,0.3)" }}>
+                  {pending.length} PENDING
+                </span>
               )}
             </div>
-            <Link href="/applicant/dashboard/history" className="text-xs no-underline font-medium inline-flex items-center gap-1" style={{ color: "#10b981" }}>
-              View All <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            <Link href="/applicant/dashboard/history" className="text-xs font-mono no-underline text-blue-400 hover:text-blue-300 inline-flex items-center gap-1">
+              <span>VIEW FULL QUEUE</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>
           </div>
 
           {loading ? (
-            <div className="p-6">{[1, 2, 3, 4].map(i => (<div key={i} className="flex gap-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}><div className="w-10 h-10 rounded-lg" style={{ background: "rgba(255,255,255,0.03)" }} /><div className="flex-1 space-y-2"><div className="h-3 w-32 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /><div className="h-2 w-48 rounded" style={{ background: "rgba(255,255,255,0.02)" }} /></div></div>))}</div>
+            <div className="p-6 space-y-3">{[1, 2, 3, 4].map(i => (<div key={i} className="h-12 rounded bg-white/5 animate-pulse" />))}</div>
           ) : queueItems.length === 0 ? (
-            <div className="text-center py-16 px-6">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(16,185,129,0.06)" }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></svg>
+            <div className="text-center py-16 px-6 font-mono">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: "rgba(37,99,235,0.1)", border: "1px solid rgba(96,165,250,0.3)" }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></svg>
               </div>
-              <p className="text-sm font-medium mb-1" style={{ color: "#a1a1aa" }}>All caught up!</p>
-              <p className="text-xs" style={{ color: "#52525b" }}>No pending cases to review right now</p>
+              <p className="text-xs text-slate-300 mb-1">Queue Synchronized</p>
+              <p className="text-[11px] text-slate-500">Zero outstanding pending adjudications in current docket.</p>
             </div>
           ) : (
             <div>
               {queueItems.map((a, i) => {
-                const color = PC[a.policyType] || "#10b981";
+                const color = PC[a.policyType] || "#3B82F6";
                 const riskScore = a.result?.riskScore;
                 const isHighRisk = riskScore > 75;
                 const isReferred = a.status === "referred";
                 return (
                   <Link key={a._id} href={`/applicant/dashboard/assessment/${a._id}`} className="flex items-center gap-4 px-6 py-4 no-underline transition-all duration-200"
-                    style={{ borderBottom: i < queueItems.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none", display: "flex" }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                    style={{ borderBottom: i < queueItems.length - 1 ? "1px solid rgba(37,99,235,0.1)" : "none", display: "flex" }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(37,99,235,0.06)"}
                     onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
 
                     {/* Priority indicator */}
-                    <div className="w-1 h-10 rounded-full shrink-0" style={{ background: isHighRisk ? "#ef4444" : isReferred ? "#a78bfa" : "rgba(255,255,255,0.06)" }} />
+                    <div className="w-1 h-10 rounded-full shrink-0" style={{ background: isHighRisk ? "#F43F5E" : isReferred ? "#8B5CF6" : "rgba(37,99,235,0.3)" }} />
 
                     {/* Policy icon */}
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}12` }}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         {a.policyType === "health" && <path d="M22 12h-4l-3 9L9 3l-3 9H2" />}
                         {a.policyType === "auto" && <><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h2a2 2 0 012 2v6" /></>}
@@ -269,39 +280,29 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Info */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 font-mono">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold truncate" style={{ color: "#fafafa" }}>{a.applicant?.name || "—"}</p>
-                        {isHighRisk && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>HIGH RISK</span>}
-                        {isReferred && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(167,139,250,0.12)", color: "#a78bfa" }}>REFERRED</span>}
+                        <p className="text-xs font-bold truncate text-white">{a.applicant?.name || "—"}</p>
+                        {isHighRisk && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30">CRITICAL_RISK</span>}
+                        {isReferred && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/30">REFERRED</span>}
                       </div>
-                      <p className="text-[11px] flex items-center gap-2" style={{ color: "#52525b" }}>
-                        <span style={{ color: color }}>{PL[a.policyType] || "—"}</span>
-                        <span>&middot;</span>
-                        <span>{a.applicant?.email || "—"}</span>
-                        <span>&middot;</span>
-                        <span>{timeAgo(a.createdAt)}</span>
+                      <p className="text-[10px] text-slate-400 mt-0.5">
+                        <span style={{ color: color }}>{PL[a.policyType] || "—"}</span> &middot; {a.applicant?.email || "—"} &middot; {timeAgo(a.createdAt)}
                       </p>
                     </div>
 
                     {/* Risk score */}
-                    <div className="text-right shrink-0">
+                    <div className="text-right shrink-0 font-mono">
                       {riskScore != null ? (
-                        <span className={`font-mono text-sm font-bold px-2.5 py-1 rounded-lg ${riskScore <= 35 ? "risk-low" : riskScore <= 55 ? "risk-medium" : "risk-high"}`}>{riskScore}</span>
+                        <span className={`text-xs font-bold px-2 py-1 rounded ${riskScore <= 35 ? "text-blue-300 bg-blue-500/10 border border-blue-500/20" : riskScore <= 55 ? "text-amber-300 bg-amber-500/10 border border-amber-500/20" : "text-rose-400 bg-rose-500/10 border border-rose-500/20"}`}>
+                          SCORE: {riskScore}
+                        </span>
                       ) : (
-                        <span className="text-xs px-2 py-1 rounded-lg" style={{ background: "rgba(255,255,255,0.03)", color: "#52525b" }}>—</span>
+                        <span className="text-xs text-slate-500">—</span>
                       )}
                     </div>
 
-                    {/* Decision badge */}
-                    <div className="w-20 text-right shrink-0 hidden sm:block">
-                      <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full" style={{
-                        background: a.result?.decision === "approve" ? "rgba(16,185,129,0.1)" : a.result?.decision === "decline" ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)",
-                        color: a.result?.decision === "approve" ? "#34d399" : a.result?.decision === "decline" ? "#f87171" : "#fbbf24",
-                      }}>{a.result?.decision || "pending"}</span>
-                    </div>
-
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" strokeWidth="2" strokeLinecap="round" className="shrink-0"><path d="M9 18l6-6-6-6" /></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" className="shrink-0"><path d="M9 18l6-6-6-6" /></svg>
                   </Link>
                 );
               })}
@@ -313,19 +314,19 @@ export default function DashboardPage() {
         {/* Quick links */}
         <StaggerGrid className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6" delay={0.55}>
           {[
-            { label: "Review Queue", desc: `${pending.length} pending`, href: "/applicant/dashboard/history", color: "#10b981", icon: <><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" /><path d="M9 5a2 2 0 104 0M9 5a2 2 0 004 0" /></> },
-            { label: "Analytics", desc: "Performance data", href: "/applicant/dashboard/analytics", color: "#f59e0b", icon: <path d="M18 20V10M12 20V4M6 20v-6" /> },
-            { label: "ML Fairness", desc: "Bias monitoring", href: "/applicant/dashboard/fairness", color: "#a78bfa", icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /> },
-            { label: "Policies", desc: "Issued policies", href: "/applicant/dashboard/policies", color: "#60a5fa", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></> },
+            { label: "Review Queue", desc: `${pending.length} pending`, href: "/applicant/dashboard/history", color: "#3B82F6", icon: <><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" /><path d="M9 5a2 2 0 104 0M9 5a2 2 0 004 0" /></> },
+            { label: "Analytics", desc: "Telemetry data", href: "/applicant/dashboard/analytics", color: "#06B6D4", icon: <path d="M18 20V10M12 20V4M6 20v-6" /> },
+            { label: "Fairness Core", desc: "Bias monitoring", href: "/applicant/dashboard/fairness", color: "#8B5CF6", icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /> },
+            { label: "Policies", desc: "Issued policies", href: "/applicant/dashboard/policies", color: "#EC4899", icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></> },
           ].map(a => (
             <StaggerItem key={a.label}>
-              <Link href={a.href} className="group glass-card p-4 no-underline flex items-center gap-3 transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110" style={{ background: `${a.color}12` }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={a.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
+              <Link href={a.href} className="blueprint-card-interactive p-4 no-underline flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${a.color}15`, border: `1px solid ${a.color}30` }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={a.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: "#fafafa" }}>{a.label}</p>
-                  <p className="text-[11px]" style={{ color: "#52525b" }}>{a.desc}</p>
+                  <p className="text-xs font-mono font-bold text-white">{a.label}</p>
+                  <p className="text-[10px] font-mono text-slate-400">{a.desc}</p>
                 </div>
               </Link>
             </StaggerItem>
@@ -351,10 +352,15 @@ export default function DashboardPage() {
     <div>
       <FadeUp>
         <div className="mb-6">
-          <p className="text-sm mb-1" style={{ color: "#52525b" }}>{greeting}</p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold" style={{ color: "#fafafa" }}>{firstName}<span style={{ color: "#10b981" }}>.</span></h1>
-          <p className="text-sm mt-1" style={{ color: "#71717a" }}>
-            Manage your insurance applications and profile
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-mono text-blue-300 border border-blue-500/20 bg-blue-500/10 mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span>[PORTAL.APPLICANT_TELEMETRY]</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            {greeting}, {firstName}<span style={{ color: "#60A5FA" }}>.</span>
+          </h1>
+          <p className="text-xs font-mono text-slate-400 mt-1">
+            Continuous risk telemetry & automated actuarial underwriting dockets
           </p>
         </div>
       </FadeUp>
@@ -362,60 +368,54 @@ export default function DashboardPage() {
       {/* Profile completion warning */}
       {profile && profileComplete < 80 && (
         <FadeUp delay={0.05}>
-          <Link href="/applicant/dashboard/profile" className="no-underline flex items-center gap-4 p-5 rounded-2xl mb-6 transition-all duration-300 group"
+          <Link href="/applicant/dashboard/profile" className="no-underline flex items-center gap-4 p-5 rounded-xl mb-6 transition-all duration-300 group blueprint-card"
             style={{
-              background: profileComplete < 40 ? "rgba(239,68,68,0.04)" : "rgba(245,158,11,0.04)",
-              border: `1px solid ${profileComplete < 40 ? "rgba(239,68,68,0.12)" : "rgba(245,158,11,0.12)"}`,
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-            onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: profileComplete < 40 ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)" }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={profileComplete < 40 ? "#f87171" : "#fbbf24"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              borderColor: profileComplete < 40 ? "rgba(244,63,94,0.3)" : "rgba(245,158,11,0.3)",
+            }}>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: profileComplete < 40 ? "rgba(244,63,94,0.15)" : "rgba(245,158,11,0.15)" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={profileComplete < 40 ? "#FB7185" : "#FBBF24"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold mb-0.5" style={{ color: "#fafafa" }}>
-                Complete your profile — {profileComplete}% done
+              <p className="text-xs font-mono font-bold text-white mb-0.5">
+                TELEMETRY CALIBRATION: {profileComplete}% COMPLETE
               </p>
-              <p className="text-xs" style={{ color: "#71717a" }}>
+              <p className="text-[11px] font-mono text-slate-400">
                 {profileComplete < 40
-                  ? "Upload your documents (Aadhaar, PAN, income proof) to get accurate risk scores and lower premiums"
-                  : "Almost there! Add a few more details to unlock the best premium rates"}
+                  ? "Upload identity and financial verification documents to unlock algorithmic risk tier discounts."
+                  : "Finalize secondary disclosures to calibrate lowest policy deductible."}
               </p>
-              <div className="h-1.5 rounded-full mt-2.5 overflow-hidden" style={{ background: "rgba(255,255,255,0.04)", maxWidth: 300 }}>
+              <div className="h-1.5 rounded-full mt-2.5 overflow-hidden" style={{ background: "rgba(37,99,235,0.15)", maxWidth: 300 }}>
                 <div className="h-full rounded-full transition-all duration-1000" style={{
                   width: `${profileComplete}%`,
-                  background: profileComplete < 40 ? "#ef4444" : profileComplete < 70 ? "#f59e0b" : "#10b981",
+                  background: profileComplete < 40 ? "#F43F5E" : profileComplete < 70 ? "#F59E0B" : "#3B82F6",
                 }} />
               </div>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="2" strokeLinecap="round" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"><path d="M9 18l6-6-6-6" /></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"><path d="M9 18l6-6-6-6" /></svg>
           </Link>
         </FadeUp>
       )}
 
-      {/* Summary cards — simple, no analytics */}
-      <StaggerGrid className="grid grid-cols-3 gap-4 mb-6" delay={0.1}>
+      {/* Summary cards — Ordivalabs Blueprint Cards */}
+      <StaggerGrid className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6" delay={0.1}>
         <StaggerItem>
-          <div className="glass-card p-5 relative overflow-hidden">
-            <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full pointer-events-none" style={{ background: "rgba(16,185,129,0.06)", filter: "blur(20px)" }} />
-            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 relative" style={{ color: "#52525b" }}>My Assessments</p>
-            {loading ? <div className="h-7 w-12 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /> : <AnimatedNumber value={assessments.length} color="#10b981" />}
+          <div className="blueprint-card p-5 relative overflow-hidden">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2 text-slate-400">[TOTAL_DOCKETS]</p>
+            {loading ? <div className="h-7 w-12 rounded bg-white/5 animate-pulse" /> : <AnimatedNumber value={assessments.length} color="#3B82F6" />}
           </div>
         </StaggerItem>
         <StaggerItem>
-          <div className="glass-card p-5 relative overflow-hidden">
-            <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full pointer-events-none" style={{ background: "rgba(16,185,129,0.06)", filter: "blur(20px)" }} />
-            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 relative" style={{ color: "#52525b" }}>Approved</p>
-            {loading ? <div className="h-7 w-12 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /> : <AnimatedNumber value={approved} color="#10b981" />}
+          <div className="blueprint-card p-5 relative overflow-hidden">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2 text-slate-400">[ISSUED_POLICIES]</p>
+            {loading ? <div className="h-7 w-12 rounded bg-white/5 animate-pulse" /> : <AnimatedNumber value={approved} color="#06B6D4" />}
           </div>
         </StaggerItem>
         <StaggerItem>
-          <div className="glass-card p-5 relative overflow-hidden">
-            <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full pointer-events-none" style={{ background: "rgba(245,158,11,0.06)", filter: "blur(20px)" }} />
-            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 relative" style={{ color: "#52525b" }}>Pending Review</p>
-            {loading ? <div className="h-7 w-12 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /> : <AnimatedNumber value={pendingCount} color="#f59e0b" />}
+          <div className="blueprint-card p-5 relative overflow-hidden">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider mb-2 text-slate-400">[IN_VERIFICATION]</p>
+            {loading ? <div className="h-7 w-12 rounded bg-white/5 animate-pulse" /> : <AnimatedNumber value={pendingCount} color="#F59E0B" />}
           </div>
         </StaggerItem>
       </StaggerGrid>
@@ -423,18 +423,18 @@ export default function DashboardPage() {
       {/* Quick actions */}
       <StaggerGrid className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6" delay={0.2}>
         {[
-          { label: "New Assessment", desc: "Apply for insurance coverage", href: "/applicant/dashboard/assess", color: "#10b981", icon: <path d="M12 5v14M5 12h14" /> },
-          { label: "My Profile", desc: "Upload documents, build your profile", href: "/applicant/dashboard/profile", color: "#60a5fa", icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></> },
-          { label: "My Policies", desc: "View approved policies", href: "/applicant/dashboard/policies", color: "#f59e0b", icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /> },
+          { label: "New Assessment", desc: "Submit underwriting docket", href: "/applicant/dashboard/assess", color: "#3B82F6", icon: <path d="M12 5v14M5 12h14" /> },
+          { label: "Verified Profile", desc: "Upload docs & proof of income", href: "/applicant/dashboard/profile", color: "#06B6D4", icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></> },
+          { label: "Active Coverage", desc: "Inspect current policy contracts", href: "/applicant/dashboard/policies", color: "#8B5CF6", icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /> },
         ].map(a => (
           <StaggerItem key={a.label}>
-            <Link href={a.href} className="group glass-card p-5 no-underline flex items-center gap-4 transition-all duration-300" style={{ display: "flex" }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110" style={{ background: `${a.color}12` }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={a.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
+            <Link href={a.href} className="blueprint-card-interactive p-5 no-underline flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${a.color}15`, border: `1px solid ${a.color}30` }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={a.color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{a.icon}</svg>
               </div>
               <div>
-                <p className="text-sm font-semibold" style={{ color: "#fafafa" }}>{a.label}</p>
-                <p className="text-[11px]" style={{ color: "#52525b" }}>{a.desc}</p>
+                <p className="text-xs font-mono font-bold text-white">{a.label}</p>
+                <p className="text-[10px] font-mono text-slate-400">{a.desc}</p>
               </div>
             </Link>
           </StaggerItem>
@@ -443,32 +443,35 @@ export default function DashboardPage() {
 
       {/* Recent assessments */}
       <FadeUp delay={0.3}>
-      <div className="glass-card overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-          <h2 className="text-base font-semibold" style={{ color: "#fafafa" }}>Recent Assessments</h2>
-          <Link href="/applicant/dashboard/history" className="text-xs no-underline font-medium inline-flex items-center gap-1" style={{ color: "#10b981" }}>View All <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>
+      <div className="blueprint-card overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(37,99,235,0.15)" }}>
+          <h2 className="text-xs font-mono font-bold text-white uppercase">[RECENT_UNDERWRITING_DOCKETS]</h2>
+          <Link href="/applicant/dashboard/history" className="text-xs font-mono no-underline text-blue-400 hover:text-blue-300 inline-flex items-center gap-1">
+            <span>VIEW ALL</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </Link>
         </div>
         {loading ? (
-          <div className="p-6">{[1, 2, 3].map(i => (<div key={i} className="flex gap-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}><div className="w-8 h-8 rounded-lg" style={{ background: "rgba(255,255,255,0.03)" }} /><div className="flex-1 space-y-2"><div className="h-3 w-32 rounded" style={{ background: "rgba(255,255,255,0.04)" }} /><div className="h-2 w-48 rounded" style={{ background: "rgba(255,255,255,0.02)" }} /></div></div>))}</div>
+          <div className="p-6 space-y-3">{[1, 2, 3].map(i => (<div key={i} className="h-10 rounded bg-white/5 animate-pulse" />))}</div>
         ) : recentList.length === 0 ? (
-          <div className="text-center py-16 px-6">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(16,185,129,0.06)" }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+          <div className="text-center py-16 px-6 font-mono">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: "rgba(37,99,235,0.1)", border: "1px solid rgba(96,165,250,0.3)" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
             </div>
-            <p className="text-sm mb-1" style={{ color: "#a1a1aa" }}>No assessments yet</p>
-            <p className="text-xs mb-4" style={{ color: "#52525b" }}>Get started by creating your first risk assessment</p>
-            <Link href="/applicant/dashboard/assess" className="btn-primary no-underline text-sm">Create Assessment</Link>
+            <p className="text-xs text-slate-300 mb-1">No Underwriting Dockets Found</p>
+            <p className="text-[11px] text-slate-500 mb-4">Initialize your first algorithmic assessment docket.</p>
+            <Link href="/applicant/dashboard/assess" className="btn-primary no-underline text-xs font-mono px-4 py-2">INITIALIZE NOW</Link>
           </div>
         ) : (
           <div>
             {recentList.map((a, i) => {
-              const color = PC[a.policyType] || "#10b981";
+              const color = PC[a.policyType] || "#3B82F6";
               return (
                 <Link key={a._id} href={`/applicant/dashboard/assessment/${a._id}`} className="flex items-center gap-4 px-6 py-3.5 no-underline transition-all duration-200"
-                  style={{ borderBottom: i < recentList.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none", display: "flex" }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(16,185,129,0.02)"}
+                  style={{ borderBottom: i < recentList.length - 1 ? "1px solid rgba(37,99,235,0.1)" : "none", display: "flex" }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(37,99,235,0.06)"}
                   onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}12` }}>
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       {a.policyType === "health" && <path d="M22 12h-4l-3 9L9 3l-3 9H2" />}
                       {a.policyType === "auto" && <><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h2a2 2 0 012 2v6" /></>}
@@ -476,18 +479,20 @@ export default function DashboardPage() {
                       {a.policyType === "property" && <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>}
                     </svg>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: "#fafafa" }}>{a.applicant?.name || "—"}</p>
-                    <p className="text-[11px]" style={{ color: "#52525b" }}>{PL[a.policyType] || "—"} &middot; {timeAgo(a.createdAt)}</p>
+                  <div className="flex-1 min-w-0 font-mono">
+                    <p className="text-xs font-bold truncate text-white">{a.applicant?.name || "—"}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{PL[a.policyType] || "—"} &middot; {timeAgo(a.createdAt)}</p>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 font-mono">
                     {a.result?.riskScore != null ? (
-                      <span className={`font-mono text-sm font-bold px-2.5 py-1 rounded-lg ${a.result.riskScore <= 35 ? "risk-low" : a.result.riskScore <= 55 ? "risk-medium" : "risk-high"}`}>{a.result.riskScore}</span>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded ${a.result.riskScore <= 35 ? "text-blue-300 bg-blue-500/10 border border-blue-500/20" : a.result.riskScore <= 55 ? "text-amber-300 bg-amber-500/10 border border-amber-500/20" : "text-rose-400 bg-rose-500/10 border border-rose-500/20"}`}>
+                        SCORE: {a.result.riskScore}
+                      </span>
                     ) : (
-                      <span className="text-xs px-2 py-1 rounded-lg" style={{ background: "rgba(255,255,255,0.03)", color: "#52525b" }}>pending</span>
+                      <span className="text-xs text-slate-500">PENDING</span>
                     )}
                   </div>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" strokeWidth="2" strokeLinecap="round" className="shrink-0"><path d="M9 18l6-6-6-6" /></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" className="shrink-0"><path d="M9 18l6-6-6-6" /></svg>
                 </Link>
               );
             })}

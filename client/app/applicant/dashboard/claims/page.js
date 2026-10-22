@@ -7,48 +7,38 @@ import ErrorState from "@/components/ui/ErrorState";
 import { FadeUp } from "@/components/motion/StaggerReveal";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerReveal";
 
-/* ═══════ HELPERS ═══════ */
-const POLICY_COLORS = { health: "#10b981", auto: "#f59e0b", life: "#a78bfa", property: "#60a5fa" };
-const POLICY_BG = { health: "rgba(16,185,129,0.1)", auto: "rgba(245,158,11,0.1)", life: "rgba(167,139,250,0.1)", property: "rgba(96,165,250,0.1)" };
-
-const STATUS_STYLES = {
-  submitted: { color: "#60a5fa", bg: "rgba(96,165,250,0.1)" },
-  under_review: { color: "#60a5fa", bg: "rgba(96,165,250,0.1)" },
-  stp_approved: { color: "#10b981", bg: "rgba(16,185,129,0.1)" },
-  approved: { color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
-  rejected: { color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-  stp_rejected: { color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-  investigation: { color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-  settled: { color: "#10b981", bg: "rgba(16,185,129,0.1)" },
-  paid: { color: "#10b981", bg: "rgba(16,185,129,0.1)" },
-  manual_review: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
-  disputed: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
+/* ═══════ ORDIVALABS DESIGN SYSTEM PALETTES ═══════ */
+const POLICY_THEMES = {
+  health: { color: "#3B82F6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)", code: "HLTH" },
+  auto: { color: "#06B6D4", bg: "rgba(6,182,212,0.1)", border: "rgba(6,182,212,0.25)", code: "AUTO" },
+  life: { color: "#818CF8", bg: "rgba(129,140,248,0.1)", border: "rgba(129,140,248,0.25)", code: "LIFE" },
+  property: { color: "#38BDF8", bg: "rgba(56,189,248,0.1)", border: "rgba(56,189,248,0.25)", code: "PROP" },
 };
 
-const STATUS_LABELS = {
-  submitted: "Submitted",
-  under_review: "Under Review",
-  stp_approved: "STP Approved",
-  stp_rejected: "STP Rejected",
-  approved: "Approved",
-  rejected: "Rejected",
-  investigation: "Investigation",
-  settled: "Settled",
-  paid: "Paid",
-  manual_review: "Manual Review",
-  disputed: "Disputed",
+const STATUS_CONFIGS = {
+  submitted: { label: "Submitted", color: "#38BDF8", bg: "rgba(56,189,248,0.1)", border: "rgba(56,189,248,0.25)" },
+  under_review: { label: "Under Review", color: "#60A5FA", bg: "rgba(96,165,250,0.1)", border: "rgba(96,165,250,0.25)" },
+  stp_approved: { label: "STP Approved", color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)" },
+  approved: { label: "Approved", color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)" },
+  rejected: { label: "Rejected", color: "#F43F5E", bg: "rgba(244,63,94,0.1)", border: "rgba(244,63,94,0.25)" },
+  stp_rejected: { label: "STP Rejected", color: "#F43F5E", bg: "rgba(244,63,94,0.1)", border: "rgba(244,63,94,0.25)" },
+  investigation: { label: "Investigation", color: "#F43F5E", bg: "rgba(244,63,94,0.12)", border: "rgba(244,63,94,0.3)" },
+  settled: { label: "Settled", color: "#3B82F6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)" },
+  paid: { label: "Disbursed / Paid", color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)" },
+  manual_review: { label: "Manual Review", color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
+  disputed: { label: "Disputed", color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
 };
 
 const CLAIM_TYPE_LABELS = {
-  accident: "Accident",
-  theft: "Theft",
-  natural_disaster: "Natural Disaster",
-  medical: "Medical",
-  death: "Death",
-  disability: "Disability",
-  property_damage: "Property Damage",
-  liability: "Liability",
-  other: "Other",
+  accident: "Accident / Collision",
+  theft: "Total / Partial Theft",
+  natural_disaster: "Catastrophic Weather / Inundation",
+  medical: "Hospitalization / In-Patient Care",
+  death: "Life Term Benefit",
+  disability: "Accidental Disability",
+  property_damage: "Structural Damage",
+  liability: "Third-Party Liability",
+  other: "Standard Casualty",
 };
 
 function timeAgo(d) {
@@ -69,16 +59,14 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount);
 }
 
-/* ═══════ FILTER TABS ═══════ */
 const FILTERS = [
-  { key: "all", label: "All" },
+  { key: "all", label: "All Dockets" },
   { key: "submitted", label: "Submitted" },
-  { key: "under_review", label: "Under Review" },
+  { key: "under_review", label: "In Review" },
   { key: "approved", label: "Approved" },
-  { key: "settled", label: "Settled" },
+  { key: "settled", label: "Settled / Disbursed" },
 ];
 
-/* ═══════ COMPONENT ═══════ */
 export default function ApplicantClaimsPage() {
   const [claims, setClaims] = useState([]);
   const [stats, setStats] = useState(null);
@@ -97,7 +85,7 @@ export default function ApplicantClaimsPage() {
         setStats(d.stats || null);
         setLoading(false);
       })
-      .catch(() => { setError("Failed to load claims"); setLoading(false); });
+      .catch(() => { setError("Failed to synchronize claims registry"); setLoading(false); });
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -112,33 +100,47 @@ export default function ApplicantClaimsPage() {
   const approvedSettled = (stats?.approved || 0) + (stats?.settled || 0);
 
   return (
-    <div>
+    <div className="space-y-6">
       <Breadcrumbs />
 
       {/* Header */}
       <FadeUp>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold" style={{ color: "#fafafa" }}>My Claims</h1>
-            <p className="text-sm mt-1" style={{ color: "#71717a" }}>
-              Track and manage your insurance claims
-              {!loading && !error && <span style={{ color: "#52525b" }}> &middot; {claims.length} total</span>}
+        <div className="blueprint-card p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="absolute top-0 right-0 w-80 h-40 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-mono text-[10px] tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">
+                [ACT.DISPATCH_REGISTRY]
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] text-zinc-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                STP_ADJUDICATION_ACTIVE
+              </span>
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">
+              Claims & Loss Adjudication
+            </h1>
+            <p className="text-xs lg:text-sm text-zinc-400 mt-1 max-w-xl">
+              Track straight-through processing (STP), forensic verification signals, and settlement disbursements across all active policies.
             </p>
           </div>
-          <Link
-            href="/applicant/dashboard/claims/new"
-            className="btn-primary no-underline text-sm inline-flex items-center gap-2"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            File New Claim
-          </Link>
+
+          <div className="relative z-10 flex items-center gap-3">
+            <Link
+              href="/applicant/dashboard/claims/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs tracking-wide transition shadow-lg shadow-blue-500/20 no-underline"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              File New Claim
+            </Link>
+          </div>
         </div>
       </FadeUp>
 
-      {/* Stat Cards */}
-      <StaggerGrid className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6" delay={0.1}>
+      {/* Telemetry Stat Cards */}
+      <StaggerGrid className="grid grid-cols-1 sm:grid-cols-3 gap-4" delay={0.08}>
         {loading ? (
           <>
             <StaggerItem><StatCardSkeleton /></StaggerItem>
@@ -149,28 +151,58 @@ export default function ApplicantClaimsPage() {
           <>
             {[
               {
-                label: "Total Claims", value: stats?.total || 0, color: "#60a5fa",
-                icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></>,
+                label: "Total Registered Claims",
+                code: "[STAT.01_VOLUME]",
+                value: stats?.total || claims.length || 0,
+                color: "#3B82F6",
+                icon: (
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6" />
+                ),
               },
               {
-                label: "Approved / Settled", value: approvedSettled, color: "#10b981",
-                icon: <><path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" /></>,
+                label: "Adjudicated & Settled",
+                code: "[STAT.02_SETTLED]",
+                value: approvedSettled,
+                color: "#10B981",
+                icon: (
+                  <>
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                    <path d="M22 4L12 14.01l-3-3" />
+                  </>
+                ),
               },
               {
-                label: "Pending", value: stats?.pending || 0, color: "#f59e0b",
-                icon: <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>,
+                label: "Under Active Review",
+                code: "[STAT.03_PENDING]",
+                value: stats?.pending || claims.filter(c => ["submitted", "under_review", "investigation"].includes(c.status)).length,
+                color: "#F59E0B",
+                icon: (
+                  <>
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </>
+                ),
               },
             ].map((s) => (
               <StaggerItem key={s.label}>
-                <div className="glass-card p-5 relative overflow-hidden">
-                  <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full pointer-events-none" style={{ background: `${s.color}08`, filter: "blur(20px)" }} />
-                  <div className="flex justify-between items-start relative">
+                <div className="blueprint-card p-5 relative overflow-hidden group">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-[11px] font-medium uppercase tracking-wider mb-2" style={{ color: "#52525b" }}>{s.label}</p>
-                      <span className="font-mono text-2xl font-bold" style={{ color: s.color }}>{s.value}</span>
+                      <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-wider block mb-1">
+                        {s.code}
+                      </span>
+                      <p className="text-xs font-medium text-zinc-400 mb-2">{s.label}</p>
+                      <span className="font-mono text-3xl font-bold tracking-tight text-white">
+                        {s.value}
+                      </span>
                     </div>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${s.color}10` }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
+                    <div
+                      className="w-10 h-10 rounded-lg flex items-center justify-center border"
+                      style={{ background: `${s.color}10`, borderColor: `${s.color}30` }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                        {s.icon}
+                      </svg>
                     </div>
                   </div>
                 </div>
@@ -182,28 +214,25 @@ export default function ApplicantClaimsPage() {
 
       {/* Filter Tabs */}
       {!loading && !error && claims.length > 0 && (
-        <FadeUp delay={0.2}>
-          <div className="flex gap-2 mb-4 flex-wrap">
-            {FILTERS.map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                style={{
-                  padding: "6px 16px",
-                  borderRadius: 999,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  border: filter === f.key ? "1px solid rgba(16,185,129,0.4)" : "1px solid rgba(255,255,255,0.08)",
-                  background: filter === f.key ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)",
-                  color: filter === f.key ? "#10b981" : "#71717a",
-                  transition: "all 0.15s ease",
-                }}
-              >
-                {f.label}
-              </button>
-            ))}
+        <FadeUp delay={0.12}>
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="font-mono text-[10px] text-zinc-500 uppercase mr-1">[FILTER.STATUS]:</span>
+            {FILTERS.map((f) => {
+              const active = filter === f.key;
+              return (
+                <button
+                  key={f.key}
+                  onClick={() => setFilter(f.key)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono transition flex items-center gap-1.5 ${
+                    active
+                      ? "bg-blue-600/15 text-blue-400 border border-blue-500/30"
+                      : "bg-[#0A0F1D]/60 hover:bg-[#0E1526] text-zinc-400 border border-zinc-800"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              );
+            })}
           </div>
         </FadeUp>
       )}
@@ -211,13 +240,13 @@ export default function ApplicantClaimsPage() {
       {/* Claims List */}
       <div>
         {error ? (
-          <div className="glass-card p-6">
+          <div className="blueprint-card p-6">
             <ErrorState message={error} onRetry={fetchData} />
           </div>
         ) : loading ? (
           <div className="space-y-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="glass-card p-5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="blueprint-card p-5">
                 <div className="flex gap-4">
                   <Skeleton width={60} height={24} rounded="full" />
                   <div style={{ flex: 1 }}>
@@ -231,171 +260,163 @@ export default function ApplicantClaimsPage() {
             ))}
           </div>
         ) : claims.length === 0 ? (
-          <div className="glass-card p-6">
-            <div className="text-center py-12">
-              <div style={{
-                width: 48, height: 48, borderRadius: "50%",
-                background: "rgba(16,185,129,0.08)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "0 auto 12px",
-              }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" />
-                </svg>
-              </div>
-              <p className="text-sm mb-1" style={{ color: "#fafafa", fontWeight: 500 }}>No claims yet</p>
-              <p className="text-sm mb-4" style={{ color: "#71717a" }}>File your first insurance claim to get started</p>
-              <Link href="/applicant/dashboard/claims/new" className="btn-primary no-underline text-sm">
-                File New Claim
-              </Link>
+          <div className="blueprint-card p-12 text-center">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4 text-blue-400">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" />
+              </svg>
             </div>
+            <span className="font-mono text-[10px] text-zinc-500 block mb-1">[DOCKET.EMPTY]</span>
+            <p className="text-base font-bold text-white mb-1">No Loss Claims Filed</p>
+            <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-5">
+              Submit your first incident docket to trigger our straight-through processing neural engine.
+            </p>
+            <Link href="/applicant/dashboard/claims/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs no-underline transition">
+              File First Claim
+            </Link>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="glass-card p-6">
-            <div className="text-center py-12">
-              <p className="text-sm" style={{ color: "#71717a" }}>No claims match this filter</p>
-            </div>
+          <div className="blueprint-card p-8 text-center">
+            <p className="text-xs font-mono text-zinc-500">NO DOCKETS MATCHING ACTIVE FILTER VECTOR</p>
           </div>
         ) : (
           <div className="space-y-3">
             {filtered.map((claim) => {
-              const st = STATUS_STYLES[claim.status] || { color: "#71717a", bg: "rgba(255,255,255,0.05)" };
-              const pColor = POLICY_COLORS[claim.policyType] || "#71717a";
-              const pBg = POLICY_BG[claim.policyType] || "rgba(255,255,255,0.05)";
+              const st = STATUS_CONFIGS[claim.status] || { label: claim.status, color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)" };
+              const theme = POLICY_THEMES[claim.policyType] || { color: "#3B82F6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)", code: "POL" };
               const fraudCount = claim.fraud?.flags?.length || 0;
               const isExpanded = expandedId === claim._id;
 
               return (
                 <FadeUp key={claim._id}>
                   <div
-                    className="glass-card p-5 cursor-pointer"
+                    className={`blueprint-card-interactive p-5 cursor-pointer transition ${isExpanded ? "border-blue-500/40 bg-[#0A0F1D]" : ""}`}
                     onClick={() => setExpandedId(isExpanded ? null : claim._id)}
-                    style={{ transition: "border-color 0.15s ease" }}
-                    onMouseEnter={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"}
-                    onMouseLeave={(e) => e.currentTarget.style.borderColor = ""}
                   >
-                    {/* Top row */}
-                    <div className="flex flex-wrap items-start gap-3">
-                      {/* Policy badge */}
-                      <span
-                        className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full shrink-0"
-                        style={{ background: pBg, color: pColor }}
-                      >
-                        {claim.policyType}
-                      </span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-start sm:items-center gap-3">
+                        <span
+                          className="font-mono text-[10px] font-bold px-2 py-1 rounded border tracking-wider shrink-0"
+                          style={{ background: theme.bg, color: theme.color, borderColor: theme.border }}
+                        >
+                          {theme.code}
+                        </span>
 
-                      {/* Main content */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <span className="text-sm font-semibold" style={{ color: "#fafafa" }}>
-                            {CLAIM_TYPE_LABELS[claim.claimDetails?.type] || claim.claimDetails?.type || "Claim"}
-                          </span>
-                          <span className="font-mono text-sm font-bold" style={{ color: "#fafafa" }}>
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-sm font-bold text-white">
+                              {CLAIM_TYPE_LABELS[claim.claimDetails?.type] || claim.claimDetails?.type || "Casualty Claim"}
+                            </span>
+                            <span className="font-mono text-xs text-zinc-500">
+                              #{claim._id?.slice(-8).toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span
+                              className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded border"
+                              style={{ background: st.bg, color: st.color, borderColor: st.border }}
+                            >
+                              {st.label}
+                            </span>
+
+                            {claim.stp?.autoApproved && (
+                              <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center gap-1">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                STP APPROVED
+                              </span>
+                            )}
+
+                            {fraudCount > 0 && (
+                              <span className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/25 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
+                                {fraudCount} ANOMALY FLAG{fraudCount > 1 ? "S" : ""}
+                              </span>
+                            )}
+
+                            <span className="text-[11px] font-mono text-zinc-500">
+                              {timeAgo(claim.createdAt)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-5">
+                        <div className="text-right">
+                          <span className="font-mono text-[9px] text-zinc-500 uppercase block">Estimated Loss</span>
+                          <span className="font-mono text-sm font-bold text-white">
                             {formatCurrency(claim.claimDetails?.estimatedAmount)}
                           </span>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-2">
-                          {/* Status badge */}
-                          <span
-                            className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-                            style={{ background: st.bg, color: st.color }}
+                        <div className="w-7 h-7 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                          <svg
+                            width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                            style={{ transition: "transform 0.2s ease", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
                           >
-                            {STATUS_LABELS[claim.status] || claim.status}
-                          </span>
-
-                          {/* STP badge */}
-                          {claim.stp?.autoApproved && (
-                            <span
-                              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(16,185,129,0.1)", color: "#10b981", border: "1px solid rgba(16,185,129,0.2)" }}
-                            >
-                              STP Auto-Approved
-                            </span>
-                          )}
-
-                          {/* Fraud flags */}
-                          {fraudCount > 0 && (
-                            <span
-                              className="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
-                              style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}
-                            >
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                                <path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              {fraudCount} fraud flag{fraudCount > 1 ? "s" : ""}
-                            </span>
-                          )}
-
-                          {/* Date */}
-                          <span className="text-[11px]" style={{ color: "#52525b" }}>
-                            {timeAgo(claim.createdAt)}
-                          </span>
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
                         </div>
                       </div>
-
-                      {/* Expand indicator */}
-                      <svg
-                        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="2" strokeLinecap="round"
-                        style={{ transition: "transform 0.2s ease", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", marginTop: 4 }}
-                      >
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
                     </div>
 
-                    {/* Expanded detail */}
+                    {/* Expanded Technical Dossier */}
                     {isExpanded && (
-                      <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Claimant</p>
-                            <p className="text-sm" style={{ color: "#fafafa" }}>{claim.claimant?.name || "--"}</p>
+                      <div className="mt-4 pt-4 border-t border-zinc-800/80 space-y-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="bg-[#070A13] p-3 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase">[CLAIMANT.LEGAL_NAME]</span>
+                            <span className="text-xs font-semibold text-white truncate block mt-0.5">
+                              {claim.claimant?.name || "--"}
+                            </span>
                           </div>
-                          <div>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Incident Date</p>
-                            <p className="text-sm" style={{ color: "#a1a1aa" }}>
+                          <div className="bg-[#070A13] p-3 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase">[INCIDENT.DATE]</span>
+                            <span className="text-xs font-mono text-zinc-300 block mt-0.5">
                               {claim.claimDetails?.incidentDate ? new Date(claim.claimDetails.incidentDate).toLocaleDateString("en-IN") : "--"}
-                            </p>
+                            </span>
                           </div>
-                          <div>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Location</p>
-                            <p className="text-sm" style={{ color: "#a1a1aa" }}>{claim.claimDetails?.location || "--"}</p>
+                          <div className="bg-[#070A13] p-3 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase">[GEOLOCATION.VECTOR]</span>
+                            <span className="text-xs text-zinc-300 truncate block mt-0.5">
+                              {claim.claimDetails?.location || "--"}
+                            </span>
                           </div>
-                          <div>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Approved Amount</p>
-                            <p className="text-sm font-mono font-semibold" style={{ color: claim.claimDetails?.approvedAmount ? "#10b981" : "#52525b" }}>
-                              {claim.claimDetails?.approvedAmount ? formatCurrency(claim.claimDetails.approvedAmount) : "--"}
-                            </p>
+                          <div className="bg-[#070A13] p-3 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase">[DISBURSED.SETTLEMENT]</span>
+                            <span className={`text-xs font-mono font-bold block mt-0.5 ${claim.claimDetails?.approvedAmount ? "text-emerald-400" : "text-zinc-500"}`}>
+                              {claim.claimDetails?.approvedAmount ? formatCurrency(claim.claimDetails.approvedAmount) : "Pending Review"}
+                            </span>
                           </div>
                         </div>
 
                         {claim.claimDetails?.description && (
-                          <div style={{ marginTop: 12 }}>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Description</p>
-                            <p className="text-sm" style={{ color: "#a1a1aa", lineHeight: 1.5 }}>{claim.claimDetails.description}</p>
+                          <div className="bg-[#070A13] p-3.5 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase mb-1">[INCIDENT.NARRATIVE]</span>
+                            <p className="text-xs text-zinc-300 leading-relaxed">{claim.claimDetails.description}</p>
                           </div>
                         )}
 
                         {claim.stp && (
-                          <div style={{ marginTop: 12 }}>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>STP Analysis</p>
-                            <div className="flex flex-wrap gap-2">
-                              <span className="text-xs px-2 py-0.5 rounded-full" style={{
-                                background: claim.stp.eligible ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.05)",
-                                color: claim.stp.eligible ? "#10b981" : "#71717a",
-                              }}>
-                                {claim.stp.eligible ? "STP Eligible" : "Not STP Eligible"}
+                          <div className="bg-[#070A13] p-3.5 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase mb-1.5">[NEURAL_ENGINE.STP_TELEMETRY]</span>
+                            <div className="flex flex-wrap gap-2 items-center">
+                              <span className={`text-xs font-mono px-2 py-0.5 rounded border ${
+                                claim.stp.eligible
+                                  ? "bg-blue-500/10 text-blue-400 border-blue-500/25"
+                                  : "bg-zinc-800/40 text-zinc-400 border-zinc-700/50"
+                              }`}>
+                                {claim.stp.eligible ? "STP Protocol Eligible" : "Manual Adjudication Required"}
                               </span>
-                              <span className="text-xs font-mono px-2 py-0.5 rounded-full" style={{
-                                background: "rgba(255,255,255,0.05)", color: "#a1a1aa",
-                              }}>
-                                Complexity: {claim.stp.complexity || "--"}
-                              </span>
+                              {claim.stp.complexity && (
+                                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
+                                  Complexity: {claim.stp.complexity}
+                                </span>
+                              )}
                               {claim.stp.processingTime != null && (
-                                <span className="text-xs font-mono px-2 py-0.5 rounded-full" style={{
-                                  background: "rgba(255,255,255,0.05)", color: "#a1a1aa",
-                                }}>
-                                  {claim.stp.processingTime}ms
+                                <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
+                                  Latency: {claim.stp.processingTime}ms
                                 </span>
                               )}
                             </div>
@@ -403,14 +424,17 @@ export default function ApplicantClaimsPage() {
                         )}
 
                         {claim.documents?.length > 0 && (
-                          <div style={{ marginTop: 12 }}>
-                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1" style={{ color: "#52525b" }}>Documents ({claim.documents.length})</p>
+                          <div className="bg-[#070A13] p-3.5 rounded-lg border border-zinc-800/60">
+                            <span className="font-mono text-[9px] text-zinc-500 block uppercase mb-1.5">
+                              [EVIDENCE.VERIFIED_DOCS] ({claim.documents.length})
+                            </span>
                             <div className="flex flex-wrap gap-2">
                               {claim.documents.map((doc, i) => (
-                                <span key={i} className="text-xs px-2 py-0.5 rounded-full" style={{
-                                  background: "rgba(255,255,255,0.05)", color: "#a1a1aa",
-                                }}>
-                                  {doc.name || doc.docType || `Doc ${i + 1}`}
+                                <span key={i} className="text-xs font-mono px-2.5 py-1 rounded bg-blue-950/20 text-blue-300 border border-blue-500/20 flex items-center gap-1.5">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" />
+                                  </svg>
+                                  {doc.name || doc.docType || `Doc_${i + 1}`}
                                 </span>
                               ))}
                             </div>

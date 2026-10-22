@@ -138,41 +138,54 @@ function PincodeRiskLookup({ color, onResult }) {
     setLoading(false);
   };
 
-  const riskColor = { high: "#ef4444", moderate: "#f59e0b", low: "#10b981", minimal: "#10b981" };
+  const riskColor = { high: "#f43f5e", moderate: "#f59e0b", low: "#3b82f6", minimal: "#3b82f6" };
 
   return (
-    <div className="sm:col-span-2 rounded-xl p-4" style={{ background: `${color}06`, border: `1px solid ${color}15` }}>
-      <div className="flex items-center gap-2 mb-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
-        <span className="text-xs font-bold uppercase tracking-wider" style={{ color }}>Live Location Risk Enrichment</span>
+    <div className="sm:col-span-2 blueprint-card p-5 relative overflow-hidden" style={{ borderColor: `${color}30` }}>
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.75" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
+          </div>
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: "#f8fafc" }}>Live Geo-Risk Calibration</span>
+            <span className="text-[10px] font-mono text-slate-400">SAT-TELEMETRY // PWD-RADAR</span>
+          </div>
+        </div>
+        <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-blue-500/20 text-blue-400 bg-blue-500/5">[GEO.04]</span>
       </div>
-      <div className="flex gap-2 mb-2">
-        <input className="flex-1 px-3 py-2 rounded-lg text-sm outline-none" placeholder="Enter 6-digit pincode" value={pincode} onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#fafafa", fontFamily: "inherit" }} />
+
+      <div className="flex gap-2 mb-3">
+        <input className="flex-1 px-3.5 py-2.5 rounded-xl text-sm outline-none font-mono" placeholder="Enter 6-digit postal code" value={pincode} onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          style={{ background: "rgba(10,15,29,0.8)", border: "1px solid rgba(59,130,246,0.2)", color: "#f8fafc" }} />
         <button onClick={lookup} disabled={loading || pincode.length !== 6}
-          className="px-4 py-2 rounded-lg text-xs font-semibold transition-all"
-          style={{ background: pincode.length === 6 ? color : "#27272a", color: "#fff", border: "none", cursor: pincode.length === 6 ? "pointer" : "not-allowed", opacity: loading ? 0.6 : 1 }}>
-          {loading ? "..." : "Analyze"}
+          className="px-5 py-2.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all"
+          style={{ background: pincode.length === 6 ? "linear-gradient(135deg, #2563eb, #1d4ed8)" : "rgba(148,163,184,0.1)", color: pincode.length === 6 ? "#fff" : "#64748b", border: "1px solid rgba(59,130,246,0.3)", cursor: pincode.length === 6 ? "pointer" : "not-allowed", opacity: loading ? 0.7 : 1 }}>
+          {loading ? "CALIBRATING..." : "RUN_ANALYSIS"}
         </button>
       </div>
+
       {result && (
-        <div className="grid grid-cols-3 gap-2 mt-3">
+        <div className="grid grid-cols-3 gap-2.5 mt-4 pt-4 border-t border-slate-800/80">
           {[
             { label: "Flood Risk", value: result.riskAssessment?.floodRisk?.level, score: result.riskAssessment?.floodRisk?.score },
             { label: "Wind Risk", value: result.riskAssessment?.windRisk?.level, score: result.riskAssessment?.windRisk?.score },
-            { label: "Overall Risk", value: result.riskAssessment?.overallRisk?.level, score: result.riskAssessment?.overallRisk?.score },
+            { label: "Composite Index", value: result.riskAssessment?.overallRisk?.level, score: result.riskAssessment?.overallRisk?.score },
           ].map(r => (
-            <div key={r.label} className="rounded-lg p-2.5 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <p className="text-[9px] font-medium uppercase tracking-wider mb-1" style={{ color: "#71717a" }}>{r.label}</p>
-              <p className="text-sm font-bold uppercase" style={{ color: riskColor[r.value] || "#71717a" }}>{r.value || "—"}</p>
-              {r.score != null && <p className="text-[10px] font-mono mt-0.5" style={{ color: "#52525b" }}>{r.score}/100</p>}
+            <div key={r.label} className="rounded-xl p-3 text-center border border-slate-800/80 bg-slate-900/40">
+              <p className="text-[9px] font-mono uppercase tracking-wider mb-1 text-slate-400">{r.label}</p>
+              <p className="text-sm font-bold uppercase font-mono" style={{ color: riskColor[r.value] || "#94a3b8" }}>{r.value || "—"}</p>
+              {r.score != null && <p className="text-[10px] font-mono mt-0.5 text-slate-500">{r.score} / 100</p>}
             </div>
           ))}
           {result.location?.name && (
-            <div className="col-span-3 flex items-center gap-2 mt-1 px-1">
-              <span className="text-[10px]" style={{ color: "#52525b" }}>📍 {result.location.name}{result.location.region ? `, ${result.location.region}` : ""}</span>
-              {result.forecast?.totalRainfall7d != null && <span className="text-[10px] font-mono" style={{ color: "#52525b" }}>• 7d rain: {result.forecast.totalRainfall7d}mm</span>}
-              {result.source && <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(16,185,129,0.08)", color: "#10b981" }}>{result.source === "open-meteo" ? "LIVE" : "SIMULATED"}</span>}
+            <div className="col-span-3 flex items-center justify-between mt-1 px-1 text-[11px] font-mono text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                {result.location.name}{result.location.region ? `, ${result.location.region}` : ""}
+              </span>
+              {result.forecast?.totalRainfall7d != null && <span>7D PRECIP: {result.forecast.totalRainfall7d}mm</span>}
+              {result.source && <span className="text-[9px] px-2 py-0.5 rounded border border-blue-500/30 text-blue-400 bg-blue-500/10 uppercase tracking-widest">{result.source === "open-meteo" ? "LIVE_RADAR" : "SYNTH_ENV"}</span>}
             </div>
           )}
         </div>
@@ -185,32 +198,32 @@ const propertyFields = (F, S, color, onGeoResult) => (
   <>
     <PincodeRiskLookup color={color || "#8b5cf6"} onResult={onGeoResult} />
     {S("Property Type", "propertyType", [
-      { value: "", label: "Select" },
-      { value: "house", label: "House" },
-      { value: "apartment", label: "Apartment" },
-      { value: "condo", label: "Flat" },
-      { value: "commercial", label: "Commercial" },
+      { value: "", label: "Select Type" },
+      { value: "house", label: "Single-Family House" },
+      { value: "apartment", label: "Apartment / Condo" },
+      { value: "condo", label: "Multi-Unit Flat" },
+      { value: "commercial", label: "Commercial Facility" },
     ])}
-    {F("Property Age (years)", "propertyAge", "number", "e.g. 10")}
-    {F("Property Value (₹)", "propertyValue", "number", "e.g. 5000000")}
-    {F("Area (sq. ft.)", "squareFootage", "number", "e.g. 1200")}
-    {S("Construction Type", "constructionType", [
-      { value: "", label: "Select" },
-      { value: "brick", label: "Brick" },
-      { value: "wood", label: "Wood Frame" },
-      { value: "concrete", label: "RCC / Concrete" },
-      { value: "steel", label: "Steel Frame" },
+    {F("Structure Age (years)", "propertyAge", "number", "e.g. 10")}
+    {F("Asset Valuation (₹)", "propertyValue", "number", "e.g. 5000000")}
+    {F("Calculated Area (sq. ft.)", "squareFootage", "number", "e.g. 1200")}
+    {S("Construction Spec", "constructionType", [
+      { value: "", label: "Select Spec" },
+      { value: "brick", label: "Reinforced Masonry / Brick" },
+      { value: "wood", label: "Engineered Timber Frame" },
+      { value: "concrete", label: "Cast RCC / High-Grade Concrete" },
+      { value: "steel", label: "Industrial Structural Steel" },
     ])}
-    {S("Flood Zone", "floodZone", [
-      { value: "none", label: "None" },
-      { value: "low", label: "Low Risk" },
-      { value: "moderate", label: "Moderate Risk" },
-      { value: "high", label: "High Risk" },
+    {S("Hydrological Risk Zone", "floodZone", [
+      { value: "none", label: "Zone 0: None / Elevated" },
+      { value: "low", label: "Zone 1: Low Hydraulic Impact" },
+      { value: "moderate", label: "Zone 2: Moderate Floodplain" },
+      { value: "high", label: "Zone 3: High Risk Basin" },
     ])}
-    {S("Security System", "securitySystem", [
-      { value: "none", label: "None" },
-      { value: "basic", label: "Basic" },
-      { value: "comprehensive", label: "Comprehensive + CCTV" },
+    {S("Telemetry & Security System", "securitySystem", [
+      { value: "none", label: "Unmonitored" },
+      { value: "basic", label: "Standard Perimeter Alarms" },
+      { value: "comprehensive", label: "Comprehensive Smart Mesh + 24/7 CCTV" },
     ])}
   </>
 );
@@ -223,31 +236,37 @@ export default function PolicyFormFields({ policyType, color, F, S, onGeoResult 
   if (!meta || !renderFields) return null;
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Section header with icon and description */}
-      <div className="flex items-start gap-4 mb-6 p-4 rounded-xl" style={{ background: `${color}06`, border: `1px solid ${color}12` }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}15` }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{meta.icon}</svg>
+      <div className="blueprint-card p-5 relative overflow-hidden flex items-start gap-4" style={{ borderColor: `${color}35` }}>
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">{meta.icon}</svg>
         </div>
-        <div>
-          <h3 className="text-sm font-bold mb-1" style={{ color: "#fafafa" }}>{meta.title}</h3>
-          <p className="text-xs leading-relaxed" style={{ color: "#71717a" }}>{meta.desc}</p>
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-base font-bold text-white tracking-tight">{meta.title}</h3>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-blue-500/20 text-blue-400 bg-blue-500/5">[TELEMETRY_SPEC]</span>
+          </div>
+          <p className="text-xs leading-relaxed text-slate-400">{meta.desc}</p>
         </div>
       </div>
 
       {/* Form fields grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {policyType === "property" ? renderFields(F, S, color, onGeoResult) : renderFields(F, S)}
       </div>
 
       {/* Tips section */}
-      <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.04)" }}>
-        <p className="text-[10px] font-bold uppercase tracking-wider mb-2.5" style={{ color: "#3f3f46" }}>Tips for better rates</p>
-        <div className="space-y-2">
+      <div className="blueprint-card p-4 border border-slate-800/80 bg-slate-900/30">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">[ACTUARIAL_OPTIMIZATION_VECTORS]</p>
+          <span className="text-[10px] font-mono text-emerald-400">+PREMIUM_DISCOUNT</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {meta.tips.map((tip, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
-              <span className="text-[11px] leading-relaxed" style={{ color: "#52525b" }}>{tip}</span>
+            <div key={i} className="flex items-start gap-2 p-2.5 rounded-lg border border-slate-800/60 bg-slate-950/40">
+              <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
+              <span className="text-[11px] leading-relaxed text-slate-300">{tip}</span>
             </div>
           ))}
         </div>
