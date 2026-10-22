@@ -5,6 +5,7 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { StatCardSkeleton } from "@/components/ui/Skeleton";
 import ErrorState from "@/components/ui/ErrorState";
 import { StaggerGrid, StaggerItem, FadeUp } from "@/components/motion/StaggerReveal";
+import { getClientPythonUrl } from "@/lib/api-config";
 
 /* ── Animated SVG ring that fills to a percentage ── */
 function AnimatedRing({ value, max, color, size = 56, strokeWidth = 4 }) {
@@ -111,7 +112,7 @@ export default function FairnessPage() {
     setLoading(true);
     setError(null);
     try {
-      const pyUrl = process.env.NEXT_PUBLIC_PYTHON_URL || "http://127.0.0.1:8000";
+      const pyUrl = getClientPythonUrl();
       const [fairnessRes, metricsRes, modelsRes] = await Promise.all([
         fetch(`${pyUrl}/api/ml/score/fairness`).then(r => r.ok ? r.json() : null).catch(() => null),
         fetch(`${pyUrl}/api/ml/score/metrics`).then(r => r.ok ? r.json() : null).catch(() => null),

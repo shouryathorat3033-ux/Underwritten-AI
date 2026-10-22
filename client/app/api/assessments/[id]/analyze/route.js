@@ -3,9 +3,9 @@ import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Assessment from "@/lib/models/Assessment";
 import Groq from "groq-sdk";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
 
 /* ── Simple in-memory rate limiter (per user, 5 requests per minute) ── */
 const rateMap = new Map();
@@ -131,6 +131,7 @@ export async function POST(req, { params }) {
   await Assessment.updateOne({ _id: assessment._id }, { $set: { status: "processing" } });
 
   try {
+    const pythonUrl = getPythonBackendUrl();
     const policyType = ["health", "auto", "life", "property"].includes(assessment.policyType)
       ? assessment.policyType : "health";
     const trad = assessment.traditionalData || {};
@@ -149,10 +150,10 @@ export async function POST(req, { params }) {
     // STEP 1: ML MODEL (MANDATORY — no fallback)
     // All scoring comes from the trained ensemble model.
     // ═══════════════════════════════════════════════
-    console.log("[analyze] STEP 1: Calling ML model at", PYTHON_URL);
+    console.log("[analyze] STEP 1: Calling ML model at", pythonUrl);
     let mlResult;
     try {
-      const mlRes = await fetch(`${PYTHON_URL}/api/ml/score`, {
+      const mlRes = await fetch(new URL("/api/ml/score", pythonUrl), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ assessment: assessment.toObject(), policyType }),
@@ -168,7 +169,7 @@ export async function POST(req, { params }) {
       console.error("[analyze] ML FAILED:", e.message);
       await Assessment.updateOne({ _id: assessment._id }, { $set: { status: "error" } });
       return NextResponse.json({
-        error: `ML scoring failed: ${e.message}. Ensure the Python backend is running at ${PYTHON_URL}`,
+        error: `ML scoring failed: ${e.message}. Ensure the Python backend is running at ${pythonUrl}`,
       }, { status: 502 });
     }
 
@@ -179,7 +180,7 @@ export async function POST(req, { params }) {
     let ragContext = "";
     try {
       const topFactors = mlResult.factors.slice(0, 4).map(f => f.source).join(", ");
-      const ragRes = await fetch(`${PYTHON_URL}/api/rag/search`, {
+      const ragRes = await fetch(new URL("/api/rag/search", pythonUrl), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -211,7 +212,7 @@ export async function POST(req, { params }) {
 
     // 3a. Try local Gemma 4 E4B reasoning via Python backend
     try {
-      const gemmaRes = await fetch(`${PYTHON_URL}/api/reasoning/risk-assessment`, {
+      const gemmaRes = await fetch(new URL("/api/reasoning/risk-assessment", pythonUrl), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

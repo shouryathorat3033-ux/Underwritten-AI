@@ -5,8 +5,9 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ErrorState from "@/components/ui/ErrorState";
 import AskAI from "@/components/ui/AskAI";
 import { FadeUp } from "@/components/motion/StaggerReveal";
+import { getClientPythonUrl } from "@/lib/api-config";
 
-const PY = process.env.NEXT_PUBLIC_PYTHON_URL || "http://127.0.0.1:8000";
+const PY = getClientPythonUrl();
 const COLORS = {
   health: "#3B82F6", // Electric Cobalt
   auto: "#06B6D4",   // Cyan

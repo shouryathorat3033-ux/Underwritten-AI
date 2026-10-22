@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Assessment from "@/lib/models/Assessment";
-
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 export async function POST(req) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const pythonUrl = getPythonBackendUrl();
   const { assessmentIds } = await req.json();
   if (!assessmentIds || !Array.isArray(assessmentIds) || assessmentIds.length === 0) {
     return NextResponse.json({ error: "assessmentIds array is required" }, { status: 400 });
@@ -35,7 +35,7 @@ export async function POST(req) {
       // Try ML scoring
       let mlResult = null;
       try {
-        const mlRes = await fetch(`${PYTHON_URL}/api/ml/score`, {
+        const mlRes = await fetch(new URL("/api/ml/score", pythonUrl), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ assessment: assessment.toObject(), policyType }),

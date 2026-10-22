@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 export async function GET() {
   try {
-    const res = await fetch(`${PYTHON_URL}/api/reasoning/status`, {
+    const pythonUrl = getPythonBackendUrl();
+    const res = await fetch(new URL("/api/reasoning/status", pythonUrl), {
       method: "GET",
       signal: AbortSignal.timeout(4000),
       cache: "no-store",

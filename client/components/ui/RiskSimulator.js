@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback, useRef, useMemo } from "react";
+import { getClientPythonUrl } from "@/lib/api-config";
 
 /**
  * Policy-aware risk simulator — sliders match the actual risk factors
@@ -99,7 +100,7 @@ export default function RiskSimulator({ policyType = "health", assessment }) {
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const pyUrl = process.env.NEXT_PUBLIC_PYTHON_URL || "http://127.0.0.1:8000";
+        const pyUrl = getClientPythonUrl();
 
         // Build policy-specific body from slider values
         const psd = { ...(assessment?.policySpecificData || {}) };

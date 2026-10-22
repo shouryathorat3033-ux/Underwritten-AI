@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 /**
  * POST /api/verify-document
@@ -17,6 +16,7 @@ const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
  */
 export async function POST(req) {
   try {
+    const pythonUrl = getPythonBackendUrl();
     const { documentUrl, fileName, expectedType } = await req.json();
 
     if (!documentUrl) {
@@ -44,7 +44,7 @@ export async function POST(req) {
 
     // ═══ Layer 1: Python forensic analysis (real pixel-level checks) ═══
     try {
-      const forensicRes = await fetch(`${PYTHON_URL}/api/verify`, {
+      const forensicRes = await fetch(new URL("/api/verify", pythonUrl), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ documentUrl, expectedType: expectedType || "document" }),

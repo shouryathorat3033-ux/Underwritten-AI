@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { getClientPythonUrl } from "@/lib/api-config";
 
 /**
  * RAG Citations — Shows regulatory sources and similar past cases
@@ -21,7 +22,7 @@ export default function RAGCitations({ regulatoryCitations = [], adverseActionRe
       const res = await fetch(`/api/assessments/${assessmentId}`);
       if (!res.ok) return;
       const { assessment } = await res.json();
-      const pyUrl = process.env.NEXT_PUBLIC_PYTHON_URL || "http://127.0.0.1:8000";
+      const pyUrl = getClientPythonUrl();
       const ragRes = await fetch(`${pyUrl}/api/rag/similar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

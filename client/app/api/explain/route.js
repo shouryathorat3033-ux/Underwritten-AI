@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import Groq from "groq-sdk";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "" });
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
 
 export async function POST(req) {
   try {
+    const pythonUrl = getPythonBackendUrl();
     const { section, context } = await req.json();
 
     if (!section || !context) {
@@ -14,7 +15,7 @@ export async function POST(req) {
 
     // 1. Try local Gemma 4 E4B via Python reasoning service first
     try {
-      const gemmaRes = await fetch(`${PYTHON_URL}/api/reasoning/ask`, {
+      const gemmaRes = await fetch(new URL("/api/reasoning/ask", pythonUrl), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

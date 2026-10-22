@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import Assessment from "@/lib/models/Assessment";
-
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 export async function GET(req, { params }) {
   try {
@@ -28,6 +27,7 @@ export async function GET(req, { params }) {
 
 export async function POST(req, { params }) {
   try {
+    const pythonUrl = getPythonBackendUrl();
     const { id } = await params;
     const body = await req.json().catch(() => ({}));
     const forceRefresh = Boolean(body?.refresh);
@@ -53,7 +53,7 @@ export async function POST(req, { params }) {
     }
 
     // Call Python backend's Gemma 4 E4B reasoning service
-    const pyRes = await fetch(`${PYTHON_URL}/api/reasoning/risk-assessment`, {
+    const pyRes = await fetch(new URL("/api/reasoning/risk-assessment", pythonUrl), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

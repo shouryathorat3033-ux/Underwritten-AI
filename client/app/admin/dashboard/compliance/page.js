@@ -5,8 +5,9 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { StatCardSkeleton } from "@/components/ui/Skeleton";
 import ErrorState from "@/components/ui/ErrorState";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/motion/StaggerReveal";
+import { getClientPythonUrl } from "@/lib/api-config";
 
-const PY = process.env.NEXT_PUBLIC_PYTHON_URL || "http://127.0.0.1:8000";
+const PY = getClientPythonUrl();
 
 function CheckIcon() {
   return (

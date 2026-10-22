@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth";
-
-const PYTHON_URL = process.env.PYTHON_BACKEND_URL || "http://127.0.0.1:8000";
+import { getPythonBackendUrl } from "@/lib/api-config";
 
 export async function POST(req) {
   const session = await auth();
@@ -8,6 +7,7 @@ export async function POST(req) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const pythonUrl = getPythonBackendUrl();
   const body = await req.json();
   const payload = {
     ...body,
@@ -19,9 +19,10 @@ export async function POST(req) {
     },
   };
 
-  const endpoint = body.mode === "suggestions"
-    ? `${PYTHON_URL}/api/chat/suggestions`
-    : `${PYTHON_URL}/api/chat`;
+  const endpoint = new URL(
+    body.mode === "suggestions" ? "/api/chat/suggestions" : "/api/chat",
+    pythonUrl
+  );
 
   try {
     const pyRes = await fetch(endpoint, {
