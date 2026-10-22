@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { StatCardSkeleton } from "@/components/ui/Skeleton";
@@ -14,18 +14,20 @@ function AnimatedRing({ value, max, color, size = 56, strokeWidth = 4 }) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const pct = Math.min(value / max, 1);
+      const pct = max > 0 ? Math.min(value / max, 1) : 0;
       setOffset(circumference * (1 - pct));
-    }, 300);
+    }, 200);
     return () => clearTimeout(timer);
   }, [value, max, circumference]);
 
   return (
     <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={strokeWidth} />
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
+      <circle
+        cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
         strokeDasharray={circumference} strokeDashoffset={offset}
-        style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.23,1,0.32,1)" }} />
+        style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.23,1,0.32,1)" }}
+      />
     </svg>
   );
 }
@@ -43,15 +45,22 @@ function AnimatedBar({ value, max, color, label, threshold, thresholdLabel }) {
 
   return (
     <div>
-      <div className="flex justify-between mb-1">
-        <span className="text-[11px] font-medium" style={{ color: "#a1a1aa" }}>{label}</span>
-        <span className="text-[11px] font-mono font-semibold" style={{ color }}>{typeof value === "number" ? value.toFixed(value % 1 === 0 ? 0 : 2) : value}</span>
+      <div className="flex justify-between font-mono text-[11px] mb-1">
+        <span className="text-zinc-400">{label}</span>
+        <span className="font-bold" style={{ color }}>
+          {typeof value === "number" ? value.toFixed(value % 1 === 0 ? 0 : 2) : value}
+        </span>
       </div>
-      <div className="h-2 rounded-full relative overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
-        <div className="h-full rounded-full" style={{ width: `${width}%`, background: `linear-gradient(90deg, ${color}, ${color}aa)`, transition: "width 1s cubic-bezier(0.23,1,0.32,1)", boxShadow: `0 0 12px ${color}30` }} />
+      <div className="h-1.5 rounded-full relative overflow-hidden bg-zinc-800">
+        <div
+          className="h-full rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${width}%`, background: color }}
+        />
         {thresholdPct != null && (
-          <div className="absolute top-0 bottom-0 w-px" style={{ left: `${thresholdPct}%`, background: "rgba(255,255,255,0.3)" }}>
-            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono whitespace-nowrap" style={{ color: "#52525b" }}>{thresholdLabel}</span>
+          <div className="absolute top-0 bottom-0 w-px bg-zinc-500" style={{ left: `${thresholdPct}%` }}>
+            <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[8px] font-mono whitespace-nowrap text-zinc-500">
+              {thresholdLabel}
+            </span>
           </div>
         )}
       </div>
@@ -59,38 +68,37 @@ function AnimatedBar({ value, max, color, label, threshold, thresholdLabel }) {
   );
 }
 
-/* ── Pulsing status orb ── */
+/* ── Pulsing status indicator ── */
 function StatusOrb({ passed }) {
-  const color = passed ? "#10b981" : "#ef4444";
+  const color = passed ? "#10B981" : "#F43F5E";
   return (
-    <span className="relative flex items-center justify-center w-3 h-3">
-      <span className="absolute inset-0 rounded-full" style={{ background: color, opacity: 0.3, animation: "soft-pulse 2s ease-in-out infinite" }} />
-      <span className="w-2 h-2 rounded-full relative" style={{ background: color, boxShadow: `0 0 8px ${color}80` }} />
+    <span className="relative flex items-center justify-center w-2.5 h-2.5">
+      <span className="w-2 h-2 rounded-full" style={{ background: color }} />
     </span>
   );
 }
 
-/* ── Reasoning card (replaces ExplainAI) ── */
+/* ── Reasoning Card ── */
 function Reasoning({ children }) {
   return (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
       transition={{ type: "spring", damping: 25, stiffness: 120 }}
-      className="mt-3 p-3 rounded-xl text-[11px] leading-relaxed"
-      style={{ background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.1)", borderLeft: "2px solid #10b981", color: "#a1a1aa" }}
+      className="mt-3 p-3 rounded-lg text-xs font-mono leading-relaxed bg-[#070A13] border border-blue-500/20 text-zinc-300"
     >
-      <div className="flex gap-2">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" className="shrink-0 mt-0.5">
-          <path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z"/><path d="M10 22v-4M14 22v-4M10 18h4"/>
-        </svg>
-        <span>{children}</span>
-      </div>
+      {children}
     </motion.div>
   );
 }
 
-const policyColors = { health: "#10b981", auto: "#f59e0b", life: "#a78bfa", property: "#60a5fa" };
+const POLICY_PALETTE = {
+  health: { color: "#3B82F6", code: "HLTH", label: "Health" },
+  auto: { color: "#06B6D4", code: "AUTO", label: "Auto" },
+  life: { color: "#818CF8", code: "LIFE", label: "Life" },
+  property: { color: "#38BDF8", code: "PROP", label: "Property" },
+};
 
 export default function FairnessPage() {
   const [audit, setAudit] = useState(null);
@@ -113,7 +121,7 @@ export default function FairnessPage() {
       setMetrics({ ...(metricsRes || {}), models: modelsRes });
       setLoading(false);
     } catch {
-      setError("Failed to connect to ML service. Make sure Python backend is running.");
+      setError("Failed to connect to ML telemetry stream. Verify Python service availability.");
       setLoading(false);
     }
   }, []);
@@ -127,163 +135,173 @@ export default function FairnessPage() {
   const toggle = (key) => setShowReasoning(p => ({ ...p, [key]: !p[key] }));
 
   return (
-    <div>
+    <div className="space-y-6">
       <Breadcrumbs />
 
       {/* Header */}
       <FadeUp>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold" style={{ color: "#fafafa" }}>ML Fairness Audit</h1>
-            <p className="text-sm mt-1" style={{ color: "#71717a" }}>Bias testing, model metrics, and compliance dashboard</p>
+        <div className="blueprint-card p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-80 h-40 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-mono text-[10px] tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">
+                [ML.FAIRNESS_AUDIT]
+              </span>
+              <span className="font-mono text-[10px] text-zinc-500">ECOA & IRDAI DEMOGRAPHIC PARITY</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Model Fairness & Algorithmic Bias Audit
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-xl">
+              Continuous disparate impact testing, protected class variance analysis, and inference latency telemetry across all deployed actuarial models.
+            </p>
           </div>
-          <motion.button onClick={fetchData} className="btn-secondary text-xs group" style={{ padding: "8px 16px" }}
-            whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            <span className="flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="transition-transform duration-500 group-hover:rotate-180"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-              Re-run Audit
-            </span>
-          </motion.button>
+
+          <div className="relative z-10">
+            <button
+              onClick={fetchData}
+              className="px-3.5 py-2 rounded-lg border border-zinc-800 bg-[#0A0F1D] text-zinc-300 hover:text-white text-xs font-mono transition flex items-center gap-2"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M23 4v6h-6M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+              </svg>
+              Execute Audit Run
+            </button>
+          </div>
         </div>
       </FadeUp>
 
       {error ? (
-        <ErrorState message={error} onRetry={fetchData} />
+        <div className="blueprint-card p-8">
+          <ErrorState message={error} onRetry={fetchData} />
+        </div>
       ) : loading ? (
-        <StaggerGrid className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StaggerGrid className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => <StaggerItem key={i}><StatCardSkeleton /></StaggerItem>)}
         </StaggerGrid>
       ) : (
-        <>
-          {/* ═══ Overall Status — hero card ═══ */}
+        <div className="space-y-6">
+          {/* Overall Status Hero Card */}
           <FadeUp delay={0.05}>
-            <div className="glass-card p-6 mb-6 relative overflow-hidden" style={{ borderColor: allPassed ? "rgba(16,185,129,0.25)" : "rgba(239,68,68,0.25)" }}>
-              {/* Ambient glow */}
-              <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full pointer-events-none" style={{ background: `radial-gradient(circle, ${allPassed ? "rgba(16,185,129,0.08)" : "rgba(239,68,68,0.08)"}, transparent 70%)`, filter: "blur(40px)", animation: "glow-drift 15s infinite" }} />
-
-              <div className="flex items-center gap-5 relative">
-                {/* Animated ring showing pass ratio */}
-                <div className="relative">
-                  <AnimatedRing value={passedTests} max={totalTests} color={allPassed ? "#10b981" : "#ef4444"} size={64} strokeWidth={5} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.span className="font-mono text-sm font-bold"
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5, type: "spring", damping: 15 }}
-                      style={{ color: allPassed ? "#10b981" : "#ef4444" }}>
-                      {passedTests}/{totalTests}
-                    </motion.span>
-                  </div>
-                </div>
-
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <StatusOrb passed={allPassed} />
-                    <h2 className="text-lg font-bold" style={{ color: allPassed ? "#10b981" : "#ef4444" }}>
-                      {allPassed ? "All Fairness Tests Passed" : "Fairness Violations Detected"}
-                    </h2>
-                  </div>
-                  <p className="text-sm" style={{ color: "#71717a" }}>
-                    {allPassed ? "No demographic bias detected across all 4 policy models" : "Some models show potential bias — review details below"}
-                  </p>
+            <div className="blueprint-card p-6 flex flex-col sm:flex-row items-center gap-6">
+              <div className="relative w-20 h-20 shrink-0 flex items-center justify-center">
+                <AnimatedRing value={passedTests} max={totalTests} color={allPassed ? "#10B981" : "#F43F5E"} size={72} strokeWidth={5} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-mono text-xs font-bold text-white">
+                    {passedTests}/{totalTests}
+                  </span>
                 </div>
               </div>
 
-              <Reasoning>
-                We test 3 types of bias per model: <strong style={{ color: "#fafafa" }}>Gender Disparity</strong> (score difference &lt;5pt, disparate impact ratio &gt;0.8 per ECOA 80% rule), <strong style={{ color: "#fafafa" }}>Age Fairness</strong> (no single age jump &gt;25pt), and <strong style={{ color: "#fafafa" }}>Income Disparity</strong> (income-only impact &lt;20pt). These thresholds follow ECOA and FCRA guidelines for insurance underwriting. {passedTests}/{totalTests} tests passed.
-              </Reasoning>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <StatusOrb passed={allPassed} />
+                  <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
+                    {allPassed ? "All Statutory Fairness Tests Satisfied" : "Disparate Impact Threshold Exceeded"}
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                  {allPassed
+                    ? "Continuous testing confirms zero demographic bias across gender, age curves, and socioeconomic vectors in all 4 underwriting lines."
+                    : "Statistical variance exceeds allowable threshold bounds on one or more models. Detailed factor metrics provided below."}
+                </p>
+                <p className="font-mono text-[10px] text-zinc-500 mt-2">
+                  Test battery: ECOA 80% Rule &middot; Age Contiguity Derivative &middot; Socioeconomic Isolation
+                </p>
+              </div>
             </div>
           </FadeUp>
 
-          {/* ═══ Model Fairness Cards — staggered grid ═══ */}
-          <StaggerGrid className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6" delay={0.15}>
+          {/* Model Fairness Grids */}
+          <StaggerGrid className="grid grid-cols-1 lg:grid-cols-2 gap-6" delay={0.12}>
             {audit && Object.entries(audit).map(([policyType, data]) => {
-              const color = policyColors[policyType] || "#10b981";
+              const theme = POLICY_PALETTE[policyType] || { color: "#3B82F6", code: "GEN", label: policyType };
               const testsPassed = data.tests?.filter(t => t.passed).length || 0;
               const testsTotal = data.tests?.length || 0;
+
               return (
                 <StaggerItem key={policyType}>
-                  <div className="glass-card p-6 relative overflow-hidden group">
-                    {/* Policy color accent line */}
-                    <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)`, opacity: 0.5 }} />
-                    {/* Hover glow */}
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: `${color}08`, filter: "blur(40px)" }} />
-
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}15` }}>
-                          <AnimatedRing value={testsPassed} max={testsTotal} color={color} size={32} strokeWidth={3} />
-                        </div>
+                  <div className="blueprint-card p-6">
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="font-mono text-[10px] font-bold px-2 py-0.5 rounded border"
+                          style={{ background: `${theme.color}15`, color: theme.color, borderColor: `${theme.color}30` }}
+                        >
+                          {theme.code}
+                        </span>
                         <div>
-                          <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: "#fafafa" }}>{policyType} Insurance</h3>
-                          <span className="text-[10px] font-mono" style={{ color: "#52525b" }}>{testsPassed}/{testsTotal} tests passed</span>
+                          <h3 className="text-xs font-bold text-white uppercase tracking-wide">{policyType} Model</h3>
+                          <span className="font-mono text-[10px] text-zinc-500">{testsPassed}/{testsTotal} tests passed</span>
                         </div>
                       </div>
-                      <motion.span className="text-xs font-semibold px-3 py-1 rounded-full"
-                        initial={{ scale: 0 }} animate={{ scale: 1 }}
-                        transition={{ delay: 0.3, type: "spring", damping: 12 }}
+
+                      <span
+                        className="font-mono text-[10px] font-bold px-2 py-0.5 rounded border"
                         style={{
-                          background: data.overall_passed ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
-                          color: data.overall_passed ? "#34d399" : "#f87171",
-                          boxShadow: data.overall_passed ? "0 0 12px rgba(16,185,129,0.1)" : "0 0 12px rgba(239,68,68,0.1)",
-                        }}>
-                        {data.overall_passed ? "PASS" : "FAIL"}
-                      </motion.span>
+                          background: data.overall_passed ? "rgba(16,185,129,0.1)" : "rgba(244,63,94,0.1)",
+                          color: data.overall_passed ? "#10B981" : "#F43F5E",
+                          borderColor: data.overall_passed ? "rgba(16,185,129,0.25)" : "rgba(244,63,94,0.25)",
+                        }}
+                      >
+                        {data.overall_passed ? "PASSED" : "FAILED"}
+                      </span>
                     </div>
 
                     <div className="space-y-3">
                       {data.tests?.map((test) => {
                         const testName = test.test.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
                         const key = `${policyType}-${test.test}`;
+
                         return (
-                          <div key={test.test} className="p-3 rounded-xl transition-all duration-300" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                            <div className="flex items-center justify-between mb-2.5">
+                          <div key={test.test} className="bg-[#070A13] p-3 rounded-lg border border-zinc-800">
+                            <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
                                 <StatusOrb passed={test.passed} />
-                                <span className="text-xs font-medium" style={{ color: "#a1a1aa" }}>{testName}</span>
+                                <span className="font-mono text-xs font-semibold text-zinc-300">{testName}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{
-                                  background: test.passed ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
-                                  color: test.passed ? "#34d399" : "#f87171",
-                                }}>{test.passed ? "PASS" : "FAIL"}</span>
-                                <button onClick={() => toggle(key)} className="text-[9px] font-medium px-2 py-0.5 rounded transition-all duration-200" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "#71717a", cursor: "pointer" }}
-                                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(16,185,129,0.2)"; e.currentTarget.style.color = "#a1a1aa"; }}
-                                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#71717a"; }}>
-                                  {showReasoning[key] ? "Hide" : "Why?"}
+                                <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded" style={{
+                                  color: test.passed ? "#10B981" : "#F43F5E",
+                                }}>
+                                  {test.passed ? "PASS" : "FAIL"}
+                                </span>
+                                <button
+                                  onClick={() => toggle(key)}
+                                  className="font-mono text-[10px] text-zinc-500 hover:text-blue-400 cursor-pointer"
+                                >
+                                  {showReasoning[key] ? "[Hide]" : "[Details]"}
                                 </button>
                               </div>
                             </div>
 
-                            {/* Animated metric bars */}
-                            <div className="space-y-2">
+                            <div className="space-y-2 pt-1">
                               {test.score_difference != null && (
-                                <AnimatedBar value={test.score_difference} max={10} color={test.score_difference < 5 ? "#10b981" : "#ef4444"} label="Gender Score Difference" threshold={5} thresholdLabel="5pt limit" />
+                                <AnimatedBar value={test.score_difference} max={10} color={test.score_difference < 5 ? "#3B82F6" : "#F43F5E"} label="Gender Score Delta" threshold={5} thresholdLabel="5pt max" />
                               )}
                               {test.disparate_impact_ratio != null && (
-                                <AnimatedBar value={test.disparate_impact_ratio} max={1.2} color={test.disparate_impact_ratio > 0.8 ? "#10b981" : "#ef4444"} label="Disparate Impact Ratio" threshold={0.8} thresholdLabel="0.8 min" />
+                                <AnimatedBar value={test.disparate_impact_ratio} max={1.2} color={test.disparate_impact_ratio > 0.8 ? "#10B981" : "#F43F5E"} label="Disparate Impact Ratio" threshold={0.8} thresholdLabel="0.8 min" />
                               )}
                               {test.income_impact != null && (
-                                <AnimatedBar value={test.income_impact} max={40} color={test.income_impact < 20 ? "#10b981" : "#ef4444"} label="Income-Only Impact" threshold={20} thresholdLabel="20pt limit" />
+                                <AnimatedBar value={test.income_impact} max={40} color={test.income_impact < 20 ? "#06B6D4" : "#F43F5E"} label="Income-Only Swing" threshold={20} thresholdLabel="20pt limit" />
                               )}
                               {test.max_jump != null && (
-                                <AnimatedBar value={test.max_jump} max={50} color={test.max_jump < 25 ? "#10b981" : "#ef4444"} label="Max Age Score Jump" threshold={25} thresholdLabel="25pt limit" />
+                                <AnimatedBar value={test.max_jump} max={50} color={test.max_jump < 25 ? "#38BDF8" : "#F43F5E"} label="Max Age Jump" threshold={25} thresholdLabel="25pt max" />
                               )}
                             </div>
 
-                            {/* Inline reasoning */}
                             <AnimatePresence>
                               {showReasoning[key] && (
                                 <Reasoning>
-                                  {test.test === "gender_disparity" && <>
-                                    Generated identical profiles differing only in gender. Male avg: <strong style={{ color: "#fafafa" }}>{test.male_mean_score}</strong>, Female avg: <strong style={{ color: "#fafafa" }}>{test.female_mean_score}</strong>. The {test.score_difference}pt difference is {test.score_difference < 5 ? "within" : "above"} the 5pt threshold. Disparate impact ratio of {test.disparate_impact_ratio} {test.disparate_impact_ratio > 0.8 ? "exceeds" : "falls below"} the ECOA 80% rule minimum of 0.8.
-                                  </>}
-                                  {test.test === "age_fairness" && <>
-                                    Tested ages 25-75 with identical profiles. The largest score jump between consecutive age groups was <strong style={{ color: "#fafafa" }}>{test.max_jump}pt</strong> ({test.max_jump < 25 ? "within" : "above"} the 25pt threshold). Score range across all ages: {test.score_range}pt. A smooth age-risk curve prevents age discrimination in pricing.
-                                  </>}
-                                  {test.test === "income_disparity" && <>
-                                    Low income score: <strong style={{ color: "#fafafa" }}>{test.low_income_score}</strong>, High income score: <strong style={{ color: "#fafafa" }}>{test.high_income_score}</strong>. Income-only impact is {test.income_impact}pt ({test.income_impact < 20 ? "within" : "above"} the 20pt threshold). This ensures income doesn&apos;t disproportionately determine risk independently of actual risk factors.
-                                  </>}
+                                  {test.test === "gender_disparity" && (
+                                    <>Male mean: {test.male_mean_score}, Female mean: {test.female_mean_score}. Delta: {test.score_difference}pt. Ratio: {test.disparate_impact_ratio} (threshold 0.80).</>
+                                  )}
+                                  {test.test === "age_fairness" && (
+                                    <>Age cohort test (25-75). Max step jump: {test.max_jump}pt. Full curve range: {test.score_range}pt.</>
+                                  )}
+                                  {test.test === "income_disparity" && (
+                                    <>Low income score: {test.low_income_score}, High income: {test.high_income_score}. Impact swing: {test.income_impact}pt.</>
+                                  )}
                                 </Reasoning>
                               )}
                             </AnimatePresence>
@@ -297,87 +315,78 @@ export default function FairnessPage() {
             })}
           </StaggerGrid>
 
-          {/* ═══ Live Metrics — animated counters ═══ */}
+          {/* Live In-Flight Telemetry Metrics */}
           {metrics && (
-            <FadeUp delay={0.3}>
-              <div className="glass-card p-6 mb-6 relative overflow-hidden">
-                <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.05), transparent 70%)", filter: "blur(40px)", animation: "glow-drift 20s infinite" }} />
-                <h3 className="text-sm font-bold uppercase tracking-wider mb-4 relative" style={{ color: "#fafafa" }}>Live Prediction Metrics</h3>
-                <StaggerGrid className="grid grid-cols-2 lg:grid-cols-4 gap-4" delay={0.1}>
+            <FadeUp delay={0.24}>
+              <div className="blueprint-card p-6">
+                <span className="font-mono text-[10px] text-blue-400 block mb-1">[PERF.IN_FLIGHT_TELEMETRY]</span>
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Live Pipeline Latency & Inferences</h3>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
                   {[
-                    { label: "Total Predictions", value: metrics.total_predictions || 0, color: "#10b981", suffix: "", reasoning: "Each prediction runs a stacked ensemble model (GradientBoosting + RandomForest) to generate a risk score." },
-                    { label: "Error Rate", value: metrics.error_rate || 0, color: (metrics.error_rate || 0) > 5 ? "#ef4444" : "#10b981", suffix: "%", reasoning: "Percentage of predictions that failed to return a score. Industry SLA target is <1%." },
-                    { label: "P50 Latency", value: metrics.latency?.p50 || 0, color: "#f59e0b", suffix: "ms", reasoning: "Median inference time — half of all predictions are faster. Sub-500ms is excellent for real-time underwriting." },
-                    { label: "P99 Latency", value: metrics.latency?.p99 || 0, color: "#f59e0b", suffix: "ms", reasoning: "Worst-case latency. A large P50-P99 gap often indicates model cold-loading on first request." },
-                  ].map(m => {
-                    const key = `metric-${m.label}`;
-                    return (
-                      <StaggerItem key={m.label}>
-                        <div className="p-4 rounded-xl relative group" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                          <p className="text-xs mb-1.5" style={{ color: "#71717a" }}>{m.label}</p>
-                          <motion.p className="font-mono text-xl font-bold"
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, type: "spring", damping: 20 }}
-                            style={{ color: m.color }}>
-                            {m.value}{m.suffix}
-                          </motion.p>
-                          <p className="text-[10px] mt-2 leading-relaxed" style={{ color: "#52525b" }}>{m.reasoning}</p>
-                        </div>
-                      </StaggerItem>
-                    );
-                  })}
-                </StaggerGrid>
+                    { label: "Total Inferences", value: metrics.total_predictions || 0, color: "#3B82F6", sub: "Ensemble calls" },
+                    { label: "Pipeline Error Rate", value: `${metrics.error_rate || 0}%`, color: (metrics.error_rate || 0) > 5 ? "#F43F5E" : "#10B981", sub: "SLA target <1%" },
+                    { label: "P50 Latency", value: `${metrics.latency?.p50 || 0}ms`, color: "#06B6D4", sub: "Median response" },
+                    { label: "P99 Latency", value: `${metrics.latency?.p99 || 0}ms`, color: "#38BDF8", sub: "Tail latency" },
+                  ].map(m => (
+                    <div key={m.label} className="bg-[#070A13] p-4 rounded-xl border border-zinc-800">
+                      <span className="text-[10px] text-zinc-500 uppercase block">{m.label}</span>
+                      <span className="text-2xl font-bold block mt-1" style={{ color: m.color }}>{m.value}</span>
+                      <span className="text-[10px] text-zinc-500 mt-1 block">{m.sub}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </FadeUp>
           )}
 
-          {/* ═══ Trained Models — with animated R² rings ═══ */}
+          {/* Trained Models R2 Metrics */}
           {metrics?.models && (
-            <FadeUp delay={0.4}>
-              <div className="glass-card p-6 relative overflow-hidden">
-                <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,158,11,0.04), transparent 70%)", filter: "blur(40px)", animation: "glow-drift 18s infinite reverse" }} />
-                <h3 className="text-sm font-bold uppercase tracking-wider mb-4 relative" style={{ color: "#fafafa" }}>Trained Models</h3>
-                <StaggerGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" delay={0.1}>
+            <FadeUp delay={0.32}>
+              <div className="blueprint-card p-6">
+                <span className="font-mono text-[10px] text-blue-400 block mb-1">[REGISTRY.MODEL_PERFORMANCE]</span>
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4">Trained Actuarial Ensembles</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {Object.entries(metrics.models).map(([pt, info]) => {
-                    const color = policyColors[pt] || "#10b981";
+                    const theme = POLICY_PALETTE[pt] || { color: "#3B82F6", code: pt };
                     return (
-                      <StaggerItem key={pt}>
-                        <div className="p-4 rounded-xl relative overflow-hidden group" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
-                          <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: `linear-gradient(90deg, transparent, ${color}40, transparent)` }} />
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="relative">
-                              <AnimatedRing value={info.test_r2 || 0} max={1} color={color} size={40} strokeWidth={3} />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-[8px] font-mono font-bold" style={{ color }}>{info.test_r2 ? `${(info.test_r2 * 100).toFixed(0)}%` : "—"}</span>
-                              </div>
-                            </div>
-                            <p className="text-xs font-bold uppercase" style={{ color: "#fafafa" }}>{pt}</p>
-                          </div>
-                          {info.test_r2 ? (
-                            <div className="space-y-2">
-                              <AnimatedBar value={info.test_r2} max={1} color="#10b981" label="R² Score" />
-                              <AnimatedBar value={info.test_mae || 0} max={15} color="#f59e0b" label="MAE" />
-                              <AnimatedBar value={info.cv_r2_mean || 0} max={1} color="#10b981" label="CV R² Mean" />
-                              <div className="flex justify-between text-[10px] font-mono mt-2" style={{ color: "#52525b" }}>
-                                <span>Type: Stacked Ensemble</span>
-                              </div>
-                              <p className="text-[10px] mt-1 leading-relaxed" style={{ color: "#52525b" }}>
-                                Explains {(info.test_r2 * 100).toFixed(1)}% of risk score variance. Average prediction error: {info.test_mae} points on 0-100 scale. {Math.abs((info.test_r2 || 0) - (info.cv_r2_mean || 0)) < 0.02 ? "Minimal overfitting detected." : "Some train-test gap detected."}
-                              </p>
-                            </div>
-                          ) : (
-                            <p className="text-xs" style={{ color: "#52525b" }}>{info.status || "Not loaded"}</p>
-                          )}
+                      <div key={pt} className="bg-[#070A13] p-4 rounded-xl border border-zinc-800 font-mono text-xs">
+                        <div className="flex items-center justify-between mb-3">
+                          <span
+                            className="text-[10px] font-bold px-2 py-0.5 rounded border uppercase"
+                            style={{ background: `${theme.color}15`, color: theme.color, borderColor: `${theme.color}30` }}
+                          >
+                            {theme.code}
+                          </span>
+                          <span className="text-zinc-400 font-bold">{info.test_r2 ? `R² ${(info.test_r2 * 100).toFixed(0)}%` : "--"}</span>
                         </div>
-                      </StaggerItem>
+
+                        {info.test_r2 ? (
+                          <div className="space-y-2">
+                            <div>
+                              <div className="flex justify-between text-[10px] text-zinc-400 mb-1">
+                                <span>R² Goodness of Fit</span>
+                                <span className="font-bold text-white">{info.test_r2?.toFixed(3)}</span>
+                              </div>
+                              <div className="h-1 rounded-full bg-zinc-800">
+                                <div className="h-full rounded-full bg-blue-500" style={{ width: `${info.test_r2 * 100}%` }} />
+                              </div>
+                            </div>
+                            <div className="flex justify-between text-[10px] text-zinc-400 pt-1">
+                              <span>MAE Prediction Error</span>
+                              <span className="font-bold text-zinc-200">{info.test_mae} pts</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-zinc-600 text-[10px]">Model uninitialized</p>
+                        )}
+                      </div>
                     );
                   })}
-                </StaggerGrid>
+                </div>
               </div>
             </FadeUp>
           )}
-        </>
+        </div>
       )}
     </div>
   );

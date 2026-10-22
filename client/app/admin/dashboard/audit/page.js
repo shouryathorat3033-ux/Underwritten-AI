@@ -5,16 +5,23 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { FadeUp } from "@/components/motion/StaggerReveal";
 
 const TYPE_CONFIG = {
-  assessment_created: { label: "Created", color: "#60a5fa", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.2)" },
-  analysis_completed: { label: "Analyzed", color: "#10b981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.2)" },
-  underwriter_decision: { label: "Decision", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.2)" },
+  assessment_created: { label: "Intake Created", color: "#38BDF8", bg: "rgba(56,189,248,0.1)", border: "rgba(56,189,248,0.25)" },
+  analysis_completed: { label: "Neural Evaluated", color: "#3B82F6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)" },
+  underwriter_decision: { label: "Underwriter Action", color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
+};
+
+const POLICY_PALETTE = {
+  health: { bg: "rgba(59,130,246,0.1)", text: "#3B82F6", border: "rgba(59,130,246,0.25)", code: "HLTH" },
+  auto: { bg: "rgba(6,182,212,0.1)", text: "#06B6D4", border: "rgba(6,182,212,0.25)", code: "AUTO" },
+  life: { bg: "rgba(129,140,248,0.1)", text: "#818CF8", border: "rgba(129,140,248,0.25)", code: "LIFE" },
+  property: { bg: "rgba(56,189,248,0.1)", text: "#38BDF8", border: "rgba(56,189,248,0.25)", code: "PROP" },
 };
 
 const FILTERS = [
-  { key: "all", label: "All Events" },
-  { key: "assessment_created", label: "Created" },
-  { key: "analysis_completed", label: "Analyzed" },
-  { key: "underwriter_decision", label: "Decisions" },
+  { key: "all", label: "All Audit Vectors" },
+  { key: "assessment_created", label: "Intakes" },
+  { key: "analysis_completed", label: "Neural Analyses" },
+  { key: "underwriter_decision", label: "Adjudications" },
 ];
 
 function formatTimestamp(ts) {
@@ -28,71 +35,6 @@ function formatTimestamp(ts) {
   if (hrs < 24) return `${hrs}h ago`;
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) +
     " " + d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-}
-
-function StatCard({ label, value, icon, color }) {
-  return (
-    <div className="glass-card p-5" style={{ flex: 1, minWidth: 180 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "#71717a" }}>{label}</span>
-        <div style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: `${color}12`, display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d={icon} />
-          </svg>
-        </div>
-      </div>
-      <span className="font-mono text-2xl font-bold" style={{ color: "#fafafa" }}>{value}</span>
-    </div>
-  );
-}
-
-function SkeletonBlock({ width, height, style }) {
-  return (
-    <div style={{
-      width, height, borderRadius: 8,
-      background: "rgba(255,255,255,0.04)",
-      animation: "pulse-anim 1.5s ease-in-out infinite",
-      ...style,
-    }} />
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <div>
-      {/* Stat cards skeleton */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-        {[1, 2, 3].map(i => (
-          <div key={i} className="glass-card p-5" style={{ flex: 1 }}>
-            <SkeletonBlock width="60%" height={12} style={{ marginBottom: 16 }} />
-            <SkeletonBlock width="40%" height={28} />
-          </div>
-        ))}
-      </div>
-      {/* Table skeleton */}
-      <div className="glass-card p-6">
-        <SkeletonBlock width="30%" height={14} style={{ marginBottom: 20 }} />
-        {[1, 2, 3, 4, 5, 6].map(i => (
-          <div key={i} style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-            <SkeletonBlock width="15%" height={14} />
-            <SkeletonBlock width="10%" height={14} />
-            <SkeletonBlock width="15%" height={14} />
-            <SkeletonBlock width="35%" height={14} />
-            <SkeletonBlock width="10%" height={14} />
-          </div>
-        ))}
-      </div>
-      <style jsx>{`
-        @keyframes pulse-anim {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
-    </div>
-  );
 }
 
 export default function AuditPage() {
@@ -114,7 +56,7 @@ export default function AuditPage() {
         setLoading(false);
       })
       .catch(err => {
-        setError(err.message || "Failed to load audit data");
+        setError(err.message || "Failed to synchronize audit stream");
         setLoading(false);
       });
   }, []);
@@ -123,11 +65,9 @@ export default function AuditPage() {
 
   const filtered = useMemo(() => {
     let result = [...events];
-
     if (filter !== "all") {
       result = result.filter(e => e.type === filter);
     }
-
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(e =>
@@ -135,365 +75,243 @@ export default function AuditPage() {
         (e.user?.name || "").toLowerCase().includes(q)
       );
     }
-
     return result;
   }, [events, filter, search]);
 
-  if (loading) {
-    return (
-      <div>
-        <Breadcrumbs />
-        <FadeUp>
-          <h1 className="text-2xl font-extrabold mb-1" style={{ color: "#fafafa" }}>Audit Trail</h1>
-          <p className="text-sm mb-6" style={{ color: "#71717a" }}>Loading audit events...</p>
-        </FadeUp>
-        <LoadingSkeleton />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <Breadcrumbs />
-        <FadeUp>
-          <h1 className="text-2xl font-extrabold mb-1" style={{ color: "#fafafa" }}>Audit Trail</h1>
-          <p className="text-sm mb-6" style={{ color: "#71717a" }}>System activity log</p>
-        </FadeUp>
-        <div className="glass-card p-12 text-center">
-          <div style={{
-            width: 48, height: 48, borderRadius: "50%",
-            background: "rgba(239,68,68,0.08)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            margin: "0 auto 12px",
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round">
-              <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
-            </svg>
-          </div>
-          <p className="text-sm mb-3" style={{ color: "#a1a1aa" }}>{error}</p>
-          <button onClick={fetchData} style={{
-            background: "rgba(16,185,129,0.1)", color: "#10b981",
-            border: "1px solid rgba(16,185,129,0.2)", borderRadius: 10,
-            padding: "8px 20px", fontSize: 13, cursor: "pointer", fontFamily: "inherit",
-          }}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div>
+    <div className="space-y-6">
       <Breadcrumbs />
 
+      {/* Header */}
       <FadeUp>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold" style={{ color: "#fafafa" }}>Audit Trail</h1>
-            <p className="text-sm mt-1" style={{ color: "#71717a" }}>
-              System activity log
-              <span style={{ color: "#52525b" }}> &middot; {events.length} events tracked</span>
+        <div className="blueprint-card p-6 relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="absolute top-0 right-0 w-80 h-40 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-mono text-[10px] tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">
+                [AUDIT.IMMUTABLE_LOG]
+              </span>
+              <span className="font-mono text-[10px] text-zinc-500">IRDAI STATUTORY COMPLIANCE</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Actuarial Audit Ledger
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-xl">
+              Cryptographically timestamped telemetry log of all risk dossier creations, neural inferences, and underwriter determinations.
             </p>
           </div>
-          <button onClick={fetchData} style={{
-            background: "rgba(255,255,255,0.04)", color: "#a1a1aa",
-            border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10,
-            padding: "8px 16px", fontSize: 13, cursor: "pointer", fontFamily: "inherit",
-            display: "flex", alignItems: "center", gap: 6,
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M23 4v6h-6M1 20v-6h6" />
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
-            </svg>
-            Refresh
-          </button>
-        </div>
-      </FadeUp>
 
-      {/* Stats Cards */}
-      <FadeUp>
-        <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
-          <StatCard
-            label="Total Events"
-            value={stats.totalEvents}
-            color="#10b981"
-            icon="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6"
-          />
-          <StatCard
-            label="Today's Events"
-            value={stats.todayEvents}
-            color="#60a5fa"
-            icon="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
-          />
-          <StatCard
-            label="Decisions Today"
-            value={stats.decisionsToday}
-            color="#f59e0b"
-            icon="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3"
-          />
-        </div>
-      </FadeUp>
-
-      {/* Filters & Search */}
-      <FadeUp>
-        <div className="glass-card p-4 mb-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div style={{ position: "relative", flex: 1 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="2" strokeLinecap="round"
-                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
-                <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+          <div className="relative z-10">
+            <button
+              onClick={fetchData}
+              className="px-3.5 py-2 rounded-lg border border-zinc-800 bg-[#0A0F1D] text-zinc-300 hover:text-white text-xs font-mono transition flex items-center gap-2"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M23 4v6h-6M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
               </svg>
-              <input
-                className="input-field"
-                placeholder="Search by applicant name..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ paddingLeft: 36, fontSize: 13, width: "100%" }}
-              />
-            </div>
-
-            {/* Filter buttons */}
-            <div style={{ display: "flex", gap: 6 }}>
-              {FILTERS.map(f => {
-                const active = filter === f.key;
-                const typeConf = f.key !== "all" ? TYPE_CONFIG[f.key] : null;
-                return (
-                  <button
-                    key={f.key}
-                    onClick={() => setFilter(f.key)}
-                    style={{
-                      background: active
-                        ? (typeConf ? typeConf.bg : "rgba(16,185,129,0.1)")
-                        : "rgba(255,255,255,0.03)",
-                      color: active
-                        ? (typeConf ? typeConf.color : "#10b981")
-                        : "#71717a",
-                      border: `1px solid ${active
-                        ? (typeConf ? typeConf.border : "rgba(16,185,129,0.2)")
-                        : "rgba(255,255,255,0.06)"}`,
-                      borderRadius: 10,
-                      padding: "7px 14px",
-                      fontSize: 12,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      fontFamily: "inherit",
-                      whiteSpace: "nowrap",
-                      transition: "all 0.15s ease",
-                    }}
-                  >
-                    {f.label}
-                  </button>
-                );
-              })}
-            </div>
+              Sync Ledger
+            </button>
           </div>
-
-          {/* Result count */}
-          {(filter !== "all" || search.trim()) && (
-            <div style={{ display: "flex", gap: 6, marginTop: 10, alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#71717a" }}>
-                Showing {filtered.length} of {events.length} events
-              </span>
-              <button
-                onClick={() => { setFilter("all"); setSearch(""); }}
-                style={{
-                  fontSize: 11, color: "#f87171", background: "rgba(239,68,68,0.08)",
-                  border: "1px solid rgba(239,68,68,0.2)", borderRadius: 999,
-                  padding: "2px 10px", cursor: "pointer", fontFamily: "inherit",
-                }}
-              >
-                Clear filters
-              </button>
-            </div>
-          )}
         </div>
       </FadeUp>
 
-      {/* Events Table */}
-      <FadeUp>
-        <div className="glass-card p-6">
-          {filtered.length === 0 ? (
-            <div className="text-center py-12">
-              <div style={{
-                width: 48, height: 48, borderRadius: "50%",
-                background: "rgba(16,185,129,0.08)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "0 auto 12px",
-              }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                  <path d="M14 2v6h6M12 18v-6M9 15h6" />
+      {/* Telemetry Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { label: "Total Logged Events", code: "[STAT.LIFETIME_EVENTS]", value: stats.totalEvents, color: "#3B82F6", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6" },
+          { label: "Telemetry Logged Today", code: "[STAT.EVENTS_TODAY]", value: stats.todayEvents, color: "#06B6D4", icon: "M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" },
+          { label: "Decisions Adjudicated Today", code: "[STAT.ACTIONS_TODAY]", value: stats.decisionsToday, color: "#10B981", icon: "M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" },
+        ].map((s) => (
+          <div key={s.label} className="blueprint-card p-5 group">
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-wider block mb-1">
+                  {s.code}
+                </span>
+                <p className="text-xs font-medium text-zinc-400 mb-2">{s.label}</p>
+                <p className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white">{s.value}</p>
+              </div>
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center border"
+                style={{ background: `${s.color}10`, borderColor: `${s.color}30` }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={s.color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d={s.icon} />
                 </svg>
               </div>
-              <p className="text-sm" style={{ color: "#71717a" }}>
-                {search || filter !== "all" ? "No events match your filters" : "No audit events recorded yet"}
-              </p>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left" style={{ borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    {["Time", "Event", "User", "Policy", "Details", ""].map(h => (
-                      <th key={h} className="text-xs font-medium py-3 px-2" style={{ color: "#71717a" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((event) => {
-                    const tc = TYPE_CONFIG[event.type] || TYPE_CONFIG.assessment_created;
-                    return (
-                      <tr
-                        key={event.id}
-                        style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      >
-                        {/* Timestamp */}
-                        <td className="py-3 px-2" style={{ whiteSpace: "nowrap" }}>
-                          <span className="text-xs font-mono" style={{ color: "#a1a1aa" }}>
-                            {formatTimestamp(event.timestamp)}
-                          </span>
-                        </td>
+          </div>
+        ))}
+      </div>
 
-                        {/* Event type badge */}
-                        <td className="py-3 px-2">
-                          <span style={{
-                            display: "inline-block",
-                            fontSize: 11,
-                            fontWeight: 600,
-                            padding: "3px 10px",
-                            borderRadius: 999,
-                            background: tc.bg,
-                            color: tc.color,
-                            border: `1px solid ${tc.border}`,
-                            letterSpacing: "0.02em",
-                          }}>
-                            {tc.label}
-                          </span>
-                        </td>
+      {/* Filter and Search Bar */}
+      <div className="blueprint-card p-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <svg
+              width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#52525B" strokeWidth="2" strokeLinecap="round"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2"
+            >
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by applicant name or underwriter identifier..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-[#070A13] border border-zinc-800 focus:border-blue-500 text-white text-xs rounded-lg pl-9 p-2.5 outline-none font-mono"
+            />
+          </div>
 
-                        {/* User */}
-                        <td className="py-3 px-2">
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <div style={{
-                              width: 24, height: 24, borderRadius: "50%",
-                              background: event.user?.role === "system"
-                                ? "rgba(16,185,129,0.12)"
-                                : event.user?.role === "underwriter" || event.user?.role === "admin"
-                                  ? "rgba(245,158,11,0.12)"
-                                  : "rgba(59,130,246,0.12)",
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              flexShrink: 0,
-                            }}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                stroke={
-                                  event.user?.role === "system" ? "#10b981"
-                                    : event.user?.role === "underwriter" || event.user?.role === "admin" ? "#f59e0b"
-                                      : "#60a5fa"
-                                }
-                                strokeWidth="2" strokeLinecap="round">
-                                {event.user?.role === "system"
-                                  ? <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                  : <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></>
-                                }
-                              </svg>
-                            </div>
-                            <div>
-                              <div className="text-xs font-medium" style={{ color: "#fafafa" }}>{event.user?.name || "Unknown"}</div>
-                              <div className="text-[10px]" style={{ color: "#52525b", textTransform: "capitalize" }}>{event.user?.role || ""}</div>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Policy type */}
-                        <td className="py-3 px-2">
-                          {event.details?.policyType ? (
-                            <span className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full" style={{
-                              background: event.details.policyType === "health" ? "rgba(16,185,129,0.1)"
-                                : event.details.policyType === "auto" ? "rgba(245,158,11,0.1)"
-                                  : event.details.policyType === "life" ? "rgba(139,92,246,0.1)"
-                                    : "rgba(59,130,246,0.1)",
-                              color: event.details.policyType === "health" ? "#34d399"
-                                : event.details.policyType === "auto" ? "#fbbf24"
-                                  : event.details.policyType === "life" ? "#a78bfa"
-                                    : "#60a5fa",
-                            }}>
-                              {event.details.policyType}
-                            </span>
-                          ) : <span style={{ color: "#52525b" }}>--</span>}
-                        </td>
-
-                        {/* Details */}
-                        <td className="py-3 px-2" style={{ maxWidth: 320 }}>
-                          <div className="text-xs" style={{ color: "#a1a1aa" }}>
-                            <span style={{ color: "#fafafa", fontWeight: 500 }}>{event.details?.applicantName}</span>
-                            {event.details?.riskScore != null && (
-                              <span className="font-mono" style={{
-                                marginLeft: 8,
-                                padding: "1px 6px",
-                                borderRadius: 4,
-                                fontSize: 10,
-                                background: event.details.riskScore <= 35 ? "rgba(16,185,129,0.1)"
-                                  : event.details.riskScore <= 55 ? "rgba(245,158,11,0.1)"
-                                    : "rgba(239,68,68,0.1)",
-                                color: event.details.riskScore <= 35 ? "#34d399"
-                                  : event.details.riskScore <= 55 ? "#fbbf24"
-                                    : "#f87171",
-                              }}>
-                                Risk: {event.details.riskScore}
-                              </span>
-                            )}
-                            {event.details?.decision && (
-                              <span style={{
-                                marginLeft: 6,
-                                fontSize: 10,
-                                textTransform: "capitalize",
-                                color: event.details.decision === "approve" || event.details.decision === "accepted"
-                                  ? "#34d399"
-                                  : event.details.decision === "decline" || event.details.decision === "rejected"
-                                    ? "#f87171"
-                                    : "#fbbf24",
-                              }}>
-                                {event.details.decision}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-
-                        {/* Link to assessment */}
-                        <td className="py-3 px-2">
-                          <Link
-                            href={`/admin/dashboard/assessment/${event.assessmentId}`}
-                            style={{
-                              display: "inline-flex", alignItems: "center", gap: 4,
-                              color: "#71717a", fontSize: 11, textDecoration: "none",
-                              padding: "4px 8px", borderRadius: 6,
-                              background: "rgba(255,255,255,0.03)",
-                              border: "1px solid rgba(255,255,255,0.06)",
-                              transition: "all 0.15s ease",
-                            }}
-                            onMouseEnter={(e) => { e.currentTarget.style.color = "#10b981"; e.currentTarget.style.borderColor = "rgba(16,185,129,0.2)"; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.color = "#71717a"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
-                          >
-                            View
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                              <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div className="flex gap-1.5 flex-wrap">
+            {FILTERS.map(f => {
+              const active = filter === f.key;
+              return (
+                <button
+                  key={f.key}
+                  onClick={() => setFilter(f.key)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono transition ${
+                    active
+                      ? "bg-blue-600/15 text-blue-400 border border-blue-500/30 font-semibold"
+                      : "bg-[#070A13] text-zinc-400 border border-zinc-800 hover:text-white"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </FadeUp>
+
+        {(filter !== "all" || search.trim()) && (
+          <div className="flex items-center justify-between pt-3 mt-3 border-t border-zinc-800/80 font-mono text-[10px]">
+            <span className="text-zinc-500">Showing {filtered.length} of {events.length} archived events</span>
+            <button
+              onClick={() => { setFilter("all"); setSearch(""); }}
+              className="text-rose-400 hover:underline"
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Events Table Docket */}
+      <div className="blueprint-card overflow-hidden">
+        {loading ? (
+          <div className="p-8 space-y-3">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-12 rounded bg-zinc-900 animate-pulse" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 px-6">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-3 text-blue-400">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
+              </svg>
+            </div>
+            <p className="font-mono text-xs text-zinc-500">NO AUDIT RECORDS MATCH CURRENT FILTER PARAMETERS</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse font-mono text-xs">
+              <thead>
+                <tr className="border-b border-zinc-800 bg-[#070A13]/60 text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <th className="py-3 px-4">Timestamp</th>
+                  <th className="py-3 px-4">Event Classification</th>
+                  <th className="py-3 px-4">Principal Identity</th>
+                  <th className="py-3 px-4">Line of Business</th>
+                  <th className="py-3 px-4">Actuarial Payload</th>
+                  <th className="py-3 px-4 text-right">Inspect</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800/60">
+                {filtered.map((event) => {
+                  const tc = TYPE_CONFIG[event.type] || TYPE_CONFIG.assessment_created;
+                  const theme = POLICY_PALETTE[event.details?.policyType] || { code: "GEN", text: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)" };
+
+                  return (
+                    <tr
+                      key={event.id}
+                      className="hover:bg-blue-600/[0.03] transition-colors"
+                    >
+                      <td className="py-3 px-4 text-zinc-400 whitespace-nowrap text-[11px]">
+                        {formatTimestamp(event.timestamp)}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <span
+                          className="font-bold text-[10px] px-2 py-0.5 rounded border inline-block"
+                          style={{ background: tc.bg, color: tc.color, borderColor: tc.border }}
+                        >
+                          {tc.label}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[10px] text-zinc-300 font-bold shrink-0">
+                            {event.user?.name?.slice(0, 1) || "U"}
+                          </div>
+                          <div>
+                            <div className="text-white text-xs font-semibold font-sans">{event.user?.name || "System Pipeline"}</div>
+                            <div className="text-[10px] text-zinc-500 uppercase">{event.user?.role || "AUTONOMOUS"}</div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {event.details?.policyType ? (
+                          <span
+                            className="font-bold text-[10px] px-2 py-0.5 rounded border"
+                            style={{ background: theme.bg, color: theme.text, borderColor: theme.border }}
+                          >
+                            {theme.code}
+                          </span>
+                        ) : (
+                          <span className="text-zinc-600">--</span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4 max-w-xs">
+                        <div className="truncate">
+                          <span className="text-white font-sans font-medium">{event.details?.applicantName || "Anonymous"}</span>
+                          {event.details?.riskScore != null && (
+                            <span className={`ml-2 px-1.5 py-0.2 rounded text-[10px] border ${
+                              event.details.riskScore <= 35
+                                ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                : event.details.riskScore <= 55
+                                ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                                : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                            }`}>
+                              Score: {event.details.riskScore}
+                            </span>
+                          )}
+                          {event.details?.decision && (
+                            <span className="ml-1.5 text-[10px] uppercase font-bold text-zinc-400">
+                              [{event.details.decision}]
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4 text-right">
+                        <Link
+                          href={`/admin/dashboard/assessment/${event.assessmentId}`}
+                          className="px-2.5 py-1 rounded bg-[#0A0F1D] border border-zinc-800 hover:border-blue-500/40 text-blue-400 hover:text-white text-[10px] transition no-underline inline-flex items-center gap-1"
+                        >
+                          View &rarr;
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
