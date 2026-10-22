@@ -62,6 +62,7 @@ const AssessmentSchema = new mongoose.Schema({
     mlModelUsed: Boolean,
     modelVersion: String,
     traditionalScore: Number,
+    gemmaReasoning: mongoose.Schema.Types.Mixed,
   },
   underwriterAction: {
     action: { type: String, enum: ["accepted", "rejected", "modified", "info_requested"] },

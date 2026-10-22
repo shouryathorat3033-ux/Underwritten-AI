@@ -13,3 +13,8 @@ MAX_MSG_LENGTH = 500
 CHAT_TEMP = 0.3
 EXTRACT_TEMP = 0.0
 MAX_TOKENS = 1024
+
+# Local Ollama / Gemma 4 E4B Configuration
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:e4b")
+OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "90.0"))

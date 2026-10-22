@@ -15,6 +15,7 @@ import RiskSimulator from "@/components/ui/RiskSimulator";
 import ComparisonView from "@/components/ui/ComparisonView";
 import RAGCitations from "@/components/ui/RAGCitations";
 import ProductRecommendations from "@/components/ui/ProductRecommendations";
+import GemmaReasoningCard from "@/components/ui/GemmaReasoningCard";
 
 /* ─────────────────────────── helpers ─────────────────────────── */
 const RISK_COLOR = (s) =>
@@ -579,6 +580,15 @@ export default function AssessmentDetailPage() {
                 )}
               </div>
           </div>
+
+          {/* ══════════ LOCAL GEMMA 4 E4B REASONING ══════════ */}
+          {r && (
+            <GemmaReasoningCard
+              assessmentId={assessment._id}
+              initialReasoning={r.gemmaReasoning}
+              policyType={assessment.policyType}
+            />
+          )}
 
           {/* ══════════ TRADITIONAL vs AI COMPARISON ══════════ */}
           {r && (

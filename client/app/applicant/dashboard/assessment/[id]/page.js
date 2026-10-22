@@ -10,6 +10,7 @@ import ProductRecommendations from "@/components/ui/ProductRecommendations";
 import TraditionalVsAI from "@/components/ui/TraditionalVsAI";
 import PolicyRecommendation from "@/components/ui/PolicyRecommendation";
 import ImprovementTracker from "@/components/ui/ImprovementTracker";
+import GemmaReasoningCard from "@/components/ui/GemmaReasoningCard";
 
 /* ─────────────────────────── helpers ─────────────────────────── */
 const DECISION_CONFIG = {
@@ -242,6 +243,15 @@ export default function ApplicantAssessmentPage() {
             {r.explanation}
           </p>
         </div>
+      )}
+
+      {/* ══════════ LOCAL GEMMA 4 E4B REASONING (EVIDENCE-BASED) ══════════ */}
+      {showResults && r && (
+        <GemmaReasoningCard
+          assessmentId={assessment._id}
+          initialReasoning={r.gemmaReasoning}
+          policyType={assessment.policyType}
+        />
       )}
 
       {/* ══════════ ADVERSE ACTION REASONS (legally required if declined/referred) ══════════ */}

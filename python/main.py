@@ -12,6 +12,7 @@ from routes.rag import router as rag_router
 from routes.forensics import router as forensics_router
 from routes.fraud import router as fraud_router
 from routes.training import router as training_router
+from routes.reasoning import router as reasoning_router
 from config.settings import PORT
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
@@ -58,6 +59,7 @@ app.include_router(rag_router, prefix="/api/rag", tags=["rag"])
 app.include_router(forensics_router, prefix="/api/verify", tags=["forensics"])
 app.include_router(fraud_router, prefix="/api/fraud", tags=["fraud"])
 app.include_router(training_router, prefix="/api/ml/train", tags=["training"])
+app.include_router(reasoning_router, prefix="/api/reasoning", tags=["reasoning"])
 
 
 @app.get("/health")

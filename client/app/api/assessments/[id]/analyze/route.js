@@ -202,20 +202,46 @@ export async function POST(req, { params }) {
     }
 
     // ═══════════════════════════════════════════════
-    // STEP 3: LLM — EXPLANATION ONLY (no scoring)
-    // The LLM receives the ML result and RAG context,
-    // and generates a human-readable explanation.
-    // It does NOT produce scores, decisions, or premiums.
     // ═══════════════════════════════════════════════
-    console.log("[analyze] STEP 3: Generating LLM explanation");
-    const psdStr = Object.entries(psd)
-      .filter(([, v]) => v !== "" && v !== null && v !== undefined)
-      .map(([k, v]) => `- ${sanitize(k)}: ${sanitize(v)}`)
-      .join("\n") || "No additional data provided";
-
+    // STEP 3: Gemma 4 E4B Reasoning (Primary) + Fallbacks
+    // ═══════════════════════════════════════════════
+    console.log("[analyze] STEP 3: Generating reasoning & explanation");
+    let gemmaReasoning = null;
     let explanation = "";
+
+    // 3a. Try local Gemma 4 E4B reasoning via Python backend
     try {
-      const prompt = `You are an insurance underwriting analyst for the Indian market regulated by IRDAI. Your job is to EXPLAIN an ML model's risk assessment decision — you do NOT generate scores or decisions yourself.
+      const gemmaRes = await fetch(`${PYTHON_URL}/api/reasoning/risk-assessment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assessment: assessment.toObject(),
+          ml_result: mlResult,
+          policyType,
+        }),
+        signal: AbortSignal.timeout(60000),
+      });
+      if (gemmaRes.ok) {
+        const parsedGemma = await gemmaRes.json();
+        gemmaReasoning = parsedGemma;
+        if (parsedGemma.concise_dashboard_summary) {
+          explanation = parsedGemma.concise_dashboard_summary;
+          console.log("[analyze] Gemma 4 E4B reasoning generated successfully");
+        }
+      }
+    } catch (gemmaErr) {
+      console.warn("[analyze] Local Gemma 4 E4B reasoning unavailable or timed out:", gemmaErr.message);
+    }
+
+    // 3b. If local Gemma reasoning didn't set explanation, try Groq or compliance fallback
+    if (!explanation) {
+      const psdStr = Object.entries(psd)
+        .filter(([, v]) => v !== "" && v !== null && v !== undefined)
+        .map(([k, v]) => `- ${sanitize(k)}: ${sanitize(v)}`)
+        .join("\n") || "No additional data provided";
+
+      try {
+        const prompt = `You are an insurance underwriting analyst for the Indian market regulated by IRDAI. Your job is to EXPLAIN an ML model's risk assessment decision — you do NOT generate scores or decisions yourself.
 
 ML MODEL RESULT (these are final and authoritative):
 - Risk Score: ${mlResult.riskScore}/100
@@ -240,38 +266,38 @@ Write a 2-3 paragraph explanation that:
 
 Return ONLY the explanation text — no JSON, no formatting, just plain paragraphs.`;
 
-      const completion = await groq.chat.completions.create({
-        messages: [
-          { role: "system", content: "You explain ML-generated insurance underwriting decisions to applicants and underwriters. Always cite IRDAI regulations. Write clear, professional paragraphs. Do NOT output JSON — just plain text." },
-          { role: "user", content: prompt },
-        ],
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.3,
-        max_tokens: 1500,
-      });
-      explanation = completion.choices[0]?.message?.content?.trim() || "";
-      console.log("[analyze] LLM explanation generated:", explanation.length, "chars");
-    } catch (e) {
-      console.warn("[analyze] LLM explanation failed:", e.message, e.status || "", e.error?.message || "");
-      // LLM failure is NOT fatal — generate detailed compliance explanation from ML data + RAG
-      const posFactors = mlResult.factors.filter(f => f.impact === "positive").map(f => f.source);
-      const negFactors = mlResult.factors.filter(f => f.impact === "negative").map(f => f.source);
-      const decisionText = mlResult.decision === "approve"
-        ? "approved for coverage at standard rates"
-        : mlResult.decision === "refer"
-        ? "referred for manual underwriter review due to elevated risk indicators"
-        : "declined as the overall risk profile exceeds acceptable thresholds";
+        const completion = await groq.chat.completions.create({
+          messages: [
+            { role: "system", content: "You explain ML-generated insurance underwriting decisions to applicants and underwriters. Always cite IRDAI regulations. Write clear, professional paragraphs. Do NOT output JSON — just plain text." },
+            { role: "user", content: prompt },
+          ],
+          model: "llama-3.3-70b-versatile",
+          temperature: 0.3,
+          max_tokens: 1500,
+        });
+        explanation = completion.choices[0]?.message?.content?.trim() || "";
+        console.log("[analyze] LLM explanation generated:", explanation.length, "chars");
+      } catch (e) {
+        console.warn("[analyze] LLM explanation failed:", e.message, e.status || "", e.error?.message || "");
+        const posFactors = mlResult.factors.filter(f => f.impact === "positive").map(f => f.source);
+        const negFactors = mlResult.factors.filter(f => f.impact === "negative").map(f => f.source);
+        const decisionText = mlResult.decision === "approve"
+          ? "approved for coverage at standard rates"
+          : mlResult.decision === "refer"
+          ? "referred for manual underwriter review due to elevated risk indicators"
+          : "declined as the overall risk profile exceeds acceptable thresholds";
 
-      const adverseText = mlResult.adverseActionReasons?.length
-        ? `\n\nAs required by IRDAI (Health Insurance) Regulations 2016, Section 21, the key adverse factors are: ${mlResult.adverseActionReasons.map(r => `${r.factor} — ${r.reason}`).join("; ")}. Per IRDAI (Protection of Policyholders' Interests) Regulations 2017, Section 6, the applicant has been informed of the basis of risk classification applied to their proposal.`
-        : "";
+        const adverseText = mlResult.adverseActionReasons?.length
+          ? `\n\nAs required by IRDAI (Health Insurance) Regulations 2016, Section 21, the key adverse factors are: ${mlResult.adverseActionReasons.map(r => `${r.factor} — ${r.reason}`).join("; ")}. Per IRDAI (Protection of Policyholders' Interests) Regulations 2017, Section 6, the applicant has been informed of the basis of risk classification applied to their proposal.`
+          : "";
 
-      const altDataText = alt.telematicsScore || alt.behavioralScore || alt.lifestyleScore
-        ? ` Alternative data sources were incorporated: Telematics (${alt.telematicsScore ?? "N/A"}/100), Behavioral (${alt.behavioralScore ?? "N/A"}/100), Lifestyle (${alt.lifestyleScore ?? "N/A"}/100). Per IRDAI Regulatory Sandbox Regulations 2019, the use of telematics and behavioral analytics for risk assessment is permitted with appropriate consumer protection safeguards.`
-        : " No alternative data sources were available for this assessment.";
+        const altDataText = alt.telematicsScore || alt.behavioralScore || alt.lifestyleScore
+          ? ` Alternative data sources were incorporated: Telematics (${alt.telematicsScore ?? "N/A"}/100), Behavioral (${alt.behavioralScore ?? "N/A"}/100), Lifestyle (${alt.lifestyleScore ?? "N/A"}/100). Per IRDAI Regulatory Sandbox Regulations 2019, the use of telematics and behavioral analytics for risk assessment is permitted with appropriate consumer protection safeguards.`
+          : " No alternative data sources were available for this assessment.";
 
-      explanation = `The applicant's risk assessment produced a score of ${mlResult.riskScore}/100 with ${mlResult.confidence}% model confidence, and has been ${decisionText}. Per IRDAI Circular IRDA/HLT/MISC/CIR/174/11/2020, a holistic assessment of the applicant's profile was conducted considering multiple data sources rather than relying on any single parameter.`
-        + `\n\n${posFactors.length ? `Positive factors that reduced risk include: ${posFactors.join(", ")}. ` : ""}${negFactors.length ? `Risk-elevating factors include: ${negFactors.join(", ")}. ` : ""}The recommended premium range of ₹${mlResult.recommendedPremium?.min?.toLocaleString("en-IN")}-₹${mlResult.recommendedPremium?.max?.toLocaleString("en-IN")} per year was calculated using actuarial tables (IALM 2012-14) with GLM-style risk loading, in accordance with IRDAI underwriting guidelines. Per IRDAI (Insurance Surety Bonds) Guidelines 2022, Section 4, automated underwriting systems are permitted provided they are regularly audited for accuracy and fairness.${altDataText}${adverseText}`;
+        explanation = `The applicant's risk assessment produced a score of ${mlResult.riskScore}/100 with ${mlResult.confidence}% model confidence, and has been ${decisionText}. Per IRDAI Circular IRDA/HLT/MISC/CIR/174/11/2020, a holistic assessment of the applicant's profile was conducted considering multiple data sources rather than relying on any single parameter.`
+          + `\n\n${posFactors.length ? `Positive factors that reduced risk include: ${posFactors.join(", ")}. ` : ""}${negFactors.length ? `Risk-elevating factors include: ${negFactors.join(", ")}. ` : ""}The recommended premium range of ₹${mlResult.recommendedPremium?.min?.toLocaleString("en-IN")}-₹${mlResult.recommendedPremium?.max?.toLocaleString("en-IN")} per year was calculated using actuarial tables (IALM 2012-14) with GLM-style risk loading, in accordance with IRDAI underwriting guidelines. Per IRDAI (Insurance Surety Bonds) Guidelines 2022, Section 4, automated underwriting systems are permitted provided they are regularly audited for accuracy and fairness.${altDataText}${adverseText}`;
+      }
     }
 
     // ═══════════════════════════════════════════════
@@ -293,6 +319,7 @@ Return ONLY the explanation text — no JSON, no formatting, just plain paragrap
       recommendedPremium: mlResult.recommendedPremium,
       factors,
       explanation,
+      gemmaReasoning,
       processingTime: Date.now() - startTime,
       adverseActionReasons: mlResult.adverseActionReasons || [],
       regulatoryCitations: mlResult.regulatoryCitations || [],
