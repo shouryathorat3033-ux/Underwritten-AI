@@ -1,0 +1,17 @@
+{
+  "policy_type": "property",
+  "name": "custom",
+  "weights": {
+    "flood_zone": 22,
+    "property_age": 20,
+    "security": 10,
+    "income": 12,
+    "credit": 10,
+    "property_value": 8,
+    "telematics": 3,
+    "behavioral": 5,
+    "lifestyle": 5,
+    "completeness": 5
+  },
+  "total": 100
+}

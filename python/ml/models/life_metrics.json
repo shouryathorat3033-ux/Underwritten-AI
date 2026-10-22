@@ -1,0 +1,47 @@
+{
+  "policy_type": "life",
+  "model_type": "StackedEnsemble(GBR+RF->Ridge)",
+  "n_samples": 10000,
+  "test_mae": 2.74,
+  "test_r2": 0.9772,
+  "cv_r2_mean": 0.9731,
+  "cv_r2_std": 0.0006,
+  "score_range": [
+    0.1,
+    100.0
+  ],
+  "top_features": [
+    {
+      "name": "age",
+      "importance": 0.4667
+    },
+    {
+      "name": "smoking_encoded",
+      "importance": 0.2644
+    },
+    {
+      "name": "bmi",
+      "importance": 0.0705
+    },
+    {
+      "name": "credit_score_normalized",
+      "importance": 0.0441
+    },
+    {
+      "name": "income_normalized",
+      "importance": 0.0393
+    },
+    {
+      "name": "family_history_count",
+      "importance": 0.0295
+    },
+    {
+      "name": "lifestyle_score_norm",
+      "importance": 0.0231
+    },
+    {
+      "name": "social_media_risk_encoded",
+      "importance": 0.0188
+    }
+  ]
+}

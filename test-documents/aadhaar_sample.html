@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sample Aadhaar Card</title>
+<style>
+  body { margin: 0; padding: 20px; background: #f5f5f5; font-family: 'Arial', sans-serif; }
+  .card { width: 420px; height: 260px; background: white; border-radius: 8px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: relative; overflow: hidden; border: 1px solid #ddd; }
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; border-bottom: 2px solid #e65100; padding-bottom: 8px; }
+  .logo { width: 50px; height: 50px; background: linear-gradient(135deg, #e65100, #ff8f00); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; }
+  .title { font-size: 11px; color: #333; }
+  .title-main { font-size: 16px; font-weight: bold; color: #e65100; }
+  .title-sub { font-size: 9px; color: #666; }
+  .body { display: flex; gap: 16px; }
+  .photo { width: 80px; height: 100px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 10px; }
+  .info { flex: 1; }
+  .field { margin-bottom: 6px; }
+  .label { font-size: 8px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+  .value { font-size: 13px; color: #222; font-weight: 500; }
+  .aadhaar-num { font-size: 20px; font-weight: bold; color: #e65100; letter-spacing: 3px; margin-top: 12px; text-align: center; }
+  .govt { font-size: 8px; color: #999; text-align: center; margin-top: 8px; }
+  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg); font-size: 60px; color: rgba(230,81,0,0.04); font-weight: bold; pointer-events: none; }
+</style></head><body>
+<div class="card">
+  <div class="watermark">SAMPLE</div>
+  <div class="header">
+    <div class="logo">UID</div>
+    <div class="title">
+      <div class="title-sub">Government of India | भारत सरकार</div>
+      <div class="title-main">Aadhaar Card | आधार कार्ड</div>
+      <div class="title-sub">Unique Identification Authority of India</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="photo">PHOTO</div>
+    <div class="info">
+      <div class="field"><div class="label">Name / नाम</div><div class="value">Priya Sharma</div></div>
+      <div class="field"><div class="label">Date of Birth / जन्म तिथि</div><div class="value">15/03/1998</div></div>
+      <div class="field"><div class="label">Gender / लिंग</div><div class="value">Female / महिला</div></div>
+      <div class="field"><div class="label">Address / पता</div><div class="value" style="font-size:10px">42 MG Road, Koregaon Park, Pune 411001, Maharashtra</div></div>
+    </div>
+  </div>
+  <div class="aadhaar-num">8765 4321 0987</div>
+  <div class="govt">This is a sample document for testing purposes only</div>
+</div>
+</body></html>

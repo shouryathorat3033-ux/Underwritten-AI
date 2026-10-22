@@ -1,0 +1,47 @@
+{
+  "policy_type": "property",
+  "model_type": "StackedEnsemble(GBR+RF->Ridge)",
+  "n_samples": 10000,
+  "test_mae": 2.85,
+  "test_r2": 0.9653,
+  "cv_r2_mean": 0.9599,
+  "cv_r2_std": 0.0021,
+  "score_range": [
+    3.2,
+    100.0
+  ],
+  "top_features": [
+    {
+      "name": "property_age",
+      "importance": 0.2778
+    },
+    {
+      "name": "flood_zone_encoded",
+      "importance": 0.2654
+    },
+    {
+      "name": "income_normalized",
+      "importance": 0.136
+    },
+    {
+      "name": "credit_score_normalized",
+      "importance": 0.0851
+    },
+    {
+      "name": "security_encoded",
+      "importance": 0.082
+    },
+    {
+      "name": "construction_type_encoded",
+      "importance": 0.0469
+    },
+    {
+      "name": "social_media_risk_encoded",
+      "importance": 0.0357
+    },
+    {
+      "name": "behavioral_score_norm",
+      "importance": 0.0166
+    }
+  ]
+}

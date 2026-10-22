@@ -1,0 +1,47 @@
+{
+  "policy_type": "auto",
+  "model_type": "StackedEnsemble(GBR+RF->Ridge)",
+  "n_samples": 10000,
+  "test_mae": 2.58,
+  "test_r2": 0.9741,
+  "cv_r2_mean": 0.9694,
+  "cv_r2_std": 0.0013,
+  "score_range": [
+    1.9,
+    100.0
+  ],
+  "top_features": [
+    {
+      "name": "accidents_last_5",
+      "importance": 0.2419
+    },
+    {
+      "name": "age",
+      "importance": 0.2342
+    },
+    {
+      "name": "traffic_violations",
+      "importance": 0.1424
+    },
+    {
+      "name": "credit_score_normalized",
+      "importance": 0.0853
+    },
+    {
+      "name": "income_normalized",
+      "importance": 0.0709
+    },
+    {
+      "name": "telematics_score_norm",
+      "importance": 0.0576
+    },
+    {
+      "name": "driving_years",
+      "importance": 0.0494
+    },
+    {
+      "name": "social_media_risk_encoded",
+      "importance": 0.0334
+    }
+  ]
+}

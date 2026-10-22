@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sample Salary Slip</title>
+<style>
+  body { margin: 0; padding: 20px; background: #f5f5f5; font-family: 'Arial', sans-serif; }
+  .slip { width: 520px; background: white; border-radius: 4px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+  .header { text-align: center; border-bottom: 2px solid #1a237e; padding-bottom: 12px; margin-bottom: 16px; }
+  .company { font-size: 18px; font-weight: bold; color: #1a237e; }
+  .subtitle { font-size: 11px; color: #666; margin-top: 2px; }
+  .month { font-size: 12px; font-weight: 600; color: #333; margin-top: 6px; background: #f5f5f5; display: inline-block; padding: 3px 12px; border-radius: 4px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; font-size: 11px; }
+  .info-grid .label { color: #888; }
+  .info-grid .val { font-weight: 600; color: #222; text-align: right; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; }
+  th { background: #f5f5f5; padding: 6px 8px; text-align: left; font-weight: 600; color: #555; border-bottom: 1px solid #ddd; }
+  td { padding: 5px 8px; border-bottom: 1px solid #f0f0f0; color: #333; }
+  td:last-child { text-align: right; font-family: monospace; }
+  .total-row td { font-weight: bold; border-top: 2px solid #1a237e; background: #f8f9ff; color: #1a237e; }
+  .net-pay { text-align: center; margin-top: 12px; padding: 10px; background: #e8eaf6; border-radius: 6px; }
+  .net-pay .amount { font-size: 22px; font-weight: bold; color: #1a237e; }
+  .footer { font-size: 9px; color: #999; text-align: center; margin-top: 12px; }
+</style></head><body>
+<div class="slip">
+  <div class="header">
+    <div class="company">Tata Consultancy Services Ltd.</div>
+    <div class="subtitle">Rajashree Business Park, Hadapsar, Pune 411013</div>
+    <div class="month">Pay Slip — March 2026</div>
+  </div>
+  <div class="info-grid">
+    <span class="label">Employee Name</span><span class="val">Priya Sharma</span>
+    <span class="label">Employee ID</span><span class="val">TCS-PUN-87432</span>
+    <span class="label">Designation</span><span class="val">Software Engineer</span>
+    <span class="label">Department</span><span class="val">Digital Engineering</span>
+    <span class="label">PAN</span><span class="val">ABCPS1234F</span>
+    <span class="label">Bank A/C</span><span class="val">XXXX XXXX 4521</span>
+  </div>
+  <table>
+    <thead><tr><th>Earnings</th><th style="text-align:right">Amount (₹)</th></tr></thead>
+    <tbody>
+      <tr><td>Basic Salary</td><td>50,000</td></tr>
+      <tr><td>House Rent Allowance</td><td>20,000</td></tr>
+      <tr><td>Special Allowance</td><td>15,000</td></tr>
+      <tr><td>Conveyance Allowance</td><td>5,000</td></tr>
+      <tr><td>Performance Bonus</td><td>10,000</td></tr>
+      <tr class="total-row"><td>Gross Earnings</td><td>1,00,000</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th>Deductions</th><th style="text-align:right">Amount (₹)</th></tr></thead>
+    <tbody>
+      <tr><td>Provident Fund (12%)</td><td>6,000</td></tr>
+      <tr><td>Professional Tax</td><td>200</td></tr>
+      <tr><td>Income Tax (TDS)</td><td>8,333</td></tr>
+      <tr class="total-row"><td>Total Deductions</td><td>14,533</td></tr>
+    </tbody>
+  </table>
+  <div class="net-pay">
+    <div style="font-size:10px;color:#666;margin-bottom:4px">NET PAY</div>
+    <div class="amount">₹ 85,467</div>
+    <div style="font-size:9px;color:#888;margin-top:2px">Annual CTC: ₹ 12,00,000</div>
+  </div>
+  <div class="footer">This is a computer-generated document. Sample for testing purposes only.</div>
+</div>
+</body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sample Medical Report</title>
+<style>
+  body { margin: 0; padding: 20px; background: #f5f5f5; font-family: 'Arial', sans-serif; }
+  .report { width: 520px; background: white; border-radius: 4px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1b5e20; padding-bottom: 12px; margin-bottom: 16px; }
+  .hospital { font-size: 18px; font-weight: bold; color: #1b5e20; }
+  .hospsub { font-size: 10px; color: #666; }
+  .report-id { font-size: 10px; color: #888; text-align: right; }
+  .patient-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 16px; font-size: 11px; padding: 10px; background: #f9fbe7; border-radius: 6px; }
+  .patient-info .label { color: #888; }
+  .patient-info .val { font-weight: 600; color: #222; }
+  .section { margin-bottom: 14px; }
+  .section-title { font-size: 11px; font-weight: 700; color: #1b5e20; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; border-bottom: 1px solid #e8f5e9; padding-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th { background: #f1f8e9; padding: 6px 8px; text-align: left; font-weight: 600; color: #555; }
+  td { padding: 5px 8px; border-bottom: 1px solid #f0f0f0; }
+  .status { font-weight: 600; }
+  .normal { color: #2e7d32; }
+  .abnormal { color: #c62828; }
+  .borderline { color: #ef6c00; }
+  .summary { padding: 12px; background: #f9fbe7; border-radius: 6px; border-left: 3px solid #1b5e20; font-size: 11px; color: #333; line-height: 1.6; }
+  .footer { font-size: 9px; color: #999; margin-top: 16px; display: flex; justify-content: space-between; }
+</style></head><body>
+<div class="report">
+  <div class="header">
+    <div>
+      <div class="hospital">Apollo Hospitals</div>
+      <div class="hospsub">Jubilee Hills, Hyderabad 500033</div>
+      <div class="hospsub">NABH Accredited | Reg. No. TG/HYD/2019/4521</div>
+    </div>
+    <div class="report-id">
+      <div>Report #: APH-2026-18743</div>
+      <div>Date: 28 Mar 2026</div>
+    </div>
+  </div>
+
+  <div class="patient-info">
+    <span class="label">Patient Name</span><span class="val">Priya Sharma</span>
+    <span class="label">Age / Gender</span><span class="val">28 / Female</span>
+    <span class="label">Referred By</span><span class="val">Dr. Anil Kapoor</span>
+    <span class="label">Sample Date</span><span class="val">27 Mar 2026</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Vitals & Physical Examination</div>
+    <table>
+      <tr><td>Height</td><td>165 cm</td><td class="status normal">Normal</td></tr>
+      <tr><td>Weight</td><td>58 kg</td><td class="status normal">Normal</td></tr>
+      <tr><td>BMI</td><td>21.3</td><td class="status normal">Normal (18.5-24.9)</td></tr>
+      <tr><td>Blood Pressure</td><td>118/76 mmHg</td><td class="status normal">Normal</td></tr>
+      <tr><td>Resting Heart Rate</td><td>72 bpm</td><td class="status normal">Normal</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Blood Work</div>
+    <table>
+      <thead><tr><th>Test</th><th>Result</th><th>Reference</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Fasting Glucose</td><td>92 mg/dL</td><td>70-100</td><td class="status normal">Normal</td></tr>
+        <tr><td>HbA1c</td><td>5.2%</td><td>&lt;5.7%</td><td class="status normal">Normal</td></tr>
+        <tr><td>Total Cholesterol</td><td>185 mg/dL</td><td>&lt;200</td><td class="status normal">Normal</td></tr>
+        <tr><td>Hemoglobin</td><td>12.8 g/dL</td><td>12.0-16.0</td><td class="status normal">Normal</td></tr>
+        <tr><td>TSH</td><td>2.1 mIU/L</td><td>0.4-4.0</td><td class="status normal">Normal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Doctor's Summary</div>
+    <div class="summary">
+      Patient is in good overall health. All vitals within normal range. Blood work shows no abnormalities. BMI of 21.3 indicates healthy weight. No pre-existing conditions noted. Recommended: continue regular exercise and balanced diet. Follow-up in 12 months.
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Dr. Meera Patel, MD (Internal Medicine) | Lic. MCI-87432</span>
+    <span>Sample document for testing</span>
+  </div>
+</div>
+</body></html>

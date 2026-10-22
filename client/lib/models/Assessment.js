@@ -1,0 +1,78 @@
+import mongoose from "mongoose";
+
+const AssessmentSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  policyType: { type: String, enum: ["health", "auto", "life", "property"], required: true },
+  policySpecificData: mongoose.Schema.Types.Mixed,
+  documents: [{
+    name: String,
+    type: String,
+    url: String,
+    size: Number,
+    docType: String,
+    uploadedAt: { type: Date, default: Date.now },
+    verification: mongoose.Schema.Types.Mixed,
+  }],
+  applicant: {
+    name: { type: String, required: true },
+    email: String,
+    phone: String,
+    age: Number,
+    gender: String,
+    occupation: String,
+  },
+  isPublic: { type: Boolean, default: false },
+  traditionalData: {
+    income: Number,
+    creditScore: Number,
+    medicalHistory: [String],
+    existingPolicies: Number,
+  },
+  alternativeData: {
+    telematicsScore: Number,
+    behavioralScore: Number,
+    lifestyleScore: Number,
+    socialMediaRisk: { type: String, enum: ["low", "medium", "high"] },
+    jobStabilityScore: Number,
+    digitalFootprint: mongoose.Schema.Types.Mixed,
+    wearableHealthData: mongoose.Schema.Types.Mixed,
+  },
+  result: {
+    riskScore: Number,
+    decision: { type: String, enum: ["approve", "refer", "decline"] },
+    confidence: Number,
+    baseScore: Number,
+    recommendedPremium: mongoose.Schema.Types.Mixed,
+    factors: [{
+      source: String,
+      score: Number,
+      weight: Number,
+      impact: { type: String, enum: ["positive", "negative", "neutral"] },
+      contribution: Number,
+    }],
+    explanation: String,
+    processingTime: Number,
+    adverseActionReasons: [{
+      factor: String,
+      reason: String,
+      weight: Number,
+    }],
+    regulatoryCitations: mongoose.Schema.Types.Mixed,
+    recommendations: mongoose.Schema.Types.Mixed,
+    mlModelUsed: Boolean,
+    modelVersion: String,
+    traditionalScore: Number,
+  },
+  underwriterAction: {
+    action: { type: String, enum: ["accepted", "rejected", "modified", "info_requested"] },
+    justification: String,
+    modifiedPremium: { min: Number, max: Number },
+    actionBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    actionAt: Date,
+  },
+  status: { type: String, enum: ["draft", "processing", "completed", "error", "referred", "accepted", "rejected", "info_requested"], default: "draft" },
+  createdAt: { type: Date, default: Date.now },
+  completedAt: Date,
+});
+
+export default mongoose.models.Assessment || mongoose.model("Assessment", AssessmentSchema);

@@ -1,0 +1,18 @@
+{
+  "policy_type": "auto",
+  "name": "custom",
+  "weights": {
+    "age": 15,
+    "accidents": 10,
+    "violations": 10,
+    "driving_experience": 10,
+    "income": 12,
+    "credit": 11,
+    "commute": 8,
+    "telematics": 15,
+    "behavioral": 4,
+    "lifestyle": 2,
+    "completeness": 3
+  },
+  "total": 100
+}

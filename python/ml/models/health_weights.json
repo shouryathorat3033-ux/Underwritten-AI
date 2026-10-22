@@ -1,0 +1,18 @@
+{
+  "policy_type": "health",
+  "name": "custom",
+  "weights": {
+    "age": 10,
+    "smoking": 10,
+    "bmi": 9,
+    "income": 29,
+    "credit": 8,
+    "medical_history": 10,
+    "family_history": 5,
+    "telematics": 3,
+    "behavioral": 4,
+    "lifestyle": 5,
+    "completeness": 7
+  },
+  "total": 100
+}
