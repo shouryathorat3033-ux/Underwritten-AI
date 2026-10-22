@@ -54,32 +54,24 @@ export default function MobileNav() {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0f1d]/95 backdrop-blur-xl border-t border-blue-500/20 shadow-2xl"
       style={{
-        background: "rgba(15,15,19,0.97)",
-        backdropFilter: "blur(16px)",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 60 }}>
+      <div className="flex items-center justify-around h-15">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== base && pathname?.startsWith(item.href));
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="no-underline"
-              style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-                padding: "6px 12px", borderRadius: 10,
-                color: isActive ? "#10b981" : "#71717a",
-                transition: "color 0.2s",
-                textDecoration: "none",
-              }}
+              className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-lg no-underline transition-colors ${
+                isActive ? "text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200"
+              }`}
             >
               {item.icon}
-              <span style={{ fontSize: 10, fontWeight: 500 }}>{item.label}</span>
+              <span className="text-[10px] tracking-tight">{item.label}</span>
             </Link>
           );
         })}
@@ -87,18 +79,14 @@ export default function MobileNav() {
         {/* Chat button */}
         <button
           onClick={toggleChat}
-          style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-            padding: "6px 12px", borderRadius: 10,
-            color: chatOpen ? "#10b981" : "#71717a",
-            background: "none", border: "none", cursor: "pointer",
-            transition: "color 0.2s", fontFamily: "inherit",
-          }}
+          className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-lg border-none bg-transparent cursor-pointer transition-colors ${
+            chatOpen ? "text-rose-400 font-semibold" : "text-slate-400 hover:text-slate-200"
+          }`}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
-          <span style={{ fontSize: 10, fontWeight: 500 }}>AI Chat</span>
+          <span className="text-[10px] tracking-tight">AI Chat</span>
         </button>
       </div>
     </nav>

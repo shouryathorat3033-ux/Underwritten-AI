@@ -1,29 +1,29 @@
 "use client";
 
 const highlights = [
-  "AI-Powered Analysis",
-  "Real-Time Risk Scoring",
-  "Multi-Source Data Fusion",
-  "Automated Decisions",
-  "Audit-Ready Reports",
-  "Instant Processing",
-  "Predictive Modeling",
-  "Compliance Built-In",
-  "Sponsored by Persistent Systems",
+  "IRDAI CIRCULAR 2020 COMPLIANT",
+  "LOCAL GEMMA 4 E4B REASONING",
+  "STACKED ENSEMBLE R² = 0.978",
+  "MULTIMODAL DOCUMENT OCR",
+  "ACTUARIAL GLM TARIFF MODELING",
+  "DISPARATE IMPACT BIAS AUDITED",
+  "END-TO-END CRYPTOGRAPHIC AUDIT",
+  "SUB-SECOND RISK ASSESSMENT",
 ];
 
 export default function TrustBar() {
   const items = [...highlights, ...highlights];
   return (
-    <div className="py-5 overflow-hidden relative" style={{ borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-      {/* Fade edges for seamless scroll feel */}
-      <div className="absolute inset-y-0 left-0 w-24 z-10 pointer-events-none" style={{ background: "linear-gradient(to right, #09090b, transparent)" }} />
-      <div className="absolute inset-y-0 right-0 w-24 z-10 pointer-events-none" style={{ background: "linear-gradient(to left, #09090b, transparent)" }} />
-      <div className="flex items-center whitespace-nowrap" style={{ animation: "marquee-scroll 50s linear infinite", width: "max-content" }}>
+    <div className="py-4 overflow-hidden relative bg-[#070a13] border-y border-blue-500/15">
+      <div className="absolute inset-y-0 left-0 w-24 z-10 pointer-events-none bg-gradient-to-r from-[#070a13] to-transparent" />
+      <div className="absolute inset-y-0 right-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-[#070a13] to-transparent" />
+      <div className="flex items-center whitespace-nowrap" style={{ animation: "marquee-scroll 45s linear infinite", width: "max-content" }}>
         {items.map((h, i) => (
           <div key={i} className="flex items-center gap-6 px-8">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#3f3f46" }}>{h}</span>
-            <span className="w-1 h-1 rounded-full" style={{ background: "rgba(16,185,129,0.5)", boxShadow: "0 0 4px rgba(16,185,129,0.3)" }} />
+            <span className="font-mono text-xs font-medium tracking-[0.15em] text-slate-400 uppercase">
+              {h}
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_#3b82f6]" />
           </div>
         ))}
       </div>

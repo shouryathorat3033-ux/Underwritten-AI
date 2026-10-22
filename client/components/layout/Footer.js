@@ -1,86 +1,98 @@
 "use client";
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="pt-16 pb-8 relative" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-      {/* Subtle top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px]" style={{ background: "linear-gradient(90deg, transparent, rgba(16,185,129,0.3), transparent)", boxShadow: "0 0 20px rgba(16,185,129,0.1)" }} />
+    <footer className="pt-16 pb-8 relative bg-[#070a13] border-t border-blue-500/15">
+      {/* Top telemetry glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent shadow-[0_0_20px_rgba(37,99,235,0.3)]" />
 
       <div className="w-full px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-white text-[11px]" style={{ background: "linear-gradient(135deg, #10b981, #059669)", boxShadow: "0 2px 8px rgba(16,185,129,0.3)" }}>U</div>
-              <span className="font-bold text-sm" style={{ color: "#fafafa" }}>Underwrite<span style={{ color: "#10b981" }}>AI</span></span>
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-white text-[11px] bg-gradient-to-br from-blue-600 to-indigo-600 shadow-[0_0_12px_rgba(37,99,235,0.4)] border border-blue-400/30">
+                U
+              </div>
+              <span className="font-bold text-sm text-[#f8fafc]">
+                Underwrite<span className="text-blue-500">AI</span>
+              </span>
             </div>
-            <p className="text-sm leading-relaxed mb-4" style={{ color: "#52525b" }}>
-              AI-powered insurance underwriting that fuses traditional and alternative data for faster, smarter risk decisions.
+            <p className="text-xs leading-relaxed mb-4 text-slate-400">
+              Scientific insurance underwriting that fuses traditional telemetry, wearable metrics, and actuarial models for auditable, real-time risk decisions.
             </p>
+            <div className="flex items-center gap-2">
+              <span className="tech-badge text-[9px] py-0.5 px-2">
+                [ACTUARIAL.V4]
+              </span>
+              <span className="tech-badge-cyan text-[9px] py-0.5 px-2">
+                [GEMMA4:E4B]
+              </span>
+            </div>
           </div>
 
           {/* Product */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#71717a" }}>Product</h4>
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider mb-4 text-blue-400/80">Platform</h4>
             <div className="space-y-2.5">
               {[
-                { label: "Features", href: "/#features" },
-                { label: "How It Works", href: "/#how-it-works" },
-                { label: "Data Sources", href: "/#data-sources" },
+                { label: "Predictive Features", href: "/#features" },
+                { label: "Actuarial Pipeline", href: "/#how-it-works" },
+                { label: "Multi-Source Telemetry", href: "/#data-sources" },
               ].map((l) => (
-                <a key={l.label} href={l.href} className="block text-sm no-underline transition-all duration-300" style={{ color: "#52525b" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#a1a1aa"; e.currentTarget.style.paddingLeft = "4px"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "#52525b"; e.currentTarget.style.paddingLeft = "0px"; }}>
+                <Link key={l.label} href={l.href} className="block text-xs text-slate-400 hover:text-blue-300 no-underline transition-colors">
                   {l.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
 
-          {/* Platform */}
+          {/* Operations */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#71717a" }}>Platform</h4>
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider mb-4 text-blue-400/80">Workbench</h4>
             <div className="space-y-2.5">
               {[
-                { label: "Dashboard", href: "/dashboard" },
-                { label: "New Assessment", href: "/assess" },
-                { label: "Analytics", href: "/dashboard" },
+                { label: "Triage Dashboard", href: "/dashboard" },
+                { label: "Risk Intake Wizard", href: "/assess" },
+                { label: "Portfolio Analytics", href: "/dashboard" },
               ].map((l) => (
-                <a key={l.label} href={l.href} className="block text-sm no-underline transition-all duration-300" style={{ color: "#52525b" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#a1a1aa"; e.currentTarget.style.paddingLeft = "4px"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "#52525b"; e.currentTarget.style.paddingLeft = "0px"; }}>
+                <Link key={l.label} href={l.href} className="block text-xs text-slate-400 hover:text-blue-300 no-underline transition-colors">
                   {l.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
 
-          {/* Account */}
+          {/* Security & Regulatory */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#71717a" }}>Account</h4>
-            <div className="space-y-2.5">
-              {[
-                { label: "Sign In", href: "/login" },
-                { label: "Sign Up", href: "/signup" },
-              ].map((l) => (
-                <a key={l.label} href={l.href} className="block text-sm no-underline transition-all duration-300" style={{ color: "#52525b" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#a1a1aa"; e.currentTarget.style.paddingLeft = "4px"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = "#52525b"; e.currentTarget.style.paddingLeft = "0px"; }}>
-                  {l.label}
-                </a>
-              ))}
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider mb-4 text-blue-400/80">Compliance</h4>
+            <div className="space-y-2.5 text-xs text-slate-400">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>IRDAI Sandbox Circular 2020</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <span>ISO 27001 & SOC 2 Type II</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                <span>Zero-Retention Evidence Vault</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="divider-glow mb-6" />
+        <div className="tech-divider" />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs" style={{ color: "#3f3f46" }}>&copy; {new Date().getFullYear()} UnderwriteAI. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <span className="text-xs" style={{ color: "#3f3f46" }}>Intelligent Risk Assessment Platform</span>
-            <span className="text-[10px] font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(16,185,129,0.06)", color: "#52525b", border: "1px solid rgba(16,185,129,0.1)" }}>
-              Sponsored by Persistent Systems
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+          <p className="font-mono text-xs text-slate-500">
+            &copy; {new Date().getFullYear()} UnderwriteAI Intelligence Systems. All rights reserved.
+          </p>
+          <div className="flex items-center gap-3">
+            <span className="tech-badge-pink text-[10px] py-0.5 px-2.5">
+              PRECISION UNDERWRITING
             </span>
           </div>
         </div>

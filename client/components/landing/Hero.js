@@ -21,11 +21,9 @@ export default function Hero() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // ── Effect #1: Parallax on scroll ──
-      // Architecture diagram moves slower (parallax depth)
       if (diagramRef.current) {
         gsap.to(diagramRef.current, {
-          yPercent: -20,
+          yPercent: -15,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -36,7 +34,6 @@ export default function Hero() {
         });
       }
 
-      // Left content parallax (slower)
       if (leftRef.current) {
         gsap.to(leftRef.current, {
           yPercent: -8,
@@ -50,12 +47,11 @@ export default function Hero() {
         });
       }
 
-      // Ambient orbs drift on scroll
       orbsRef.current.forEach((orb, i) => {
         if (!orb) return;
         gsap.to(orb, {
-          yPercent: -30 - i * 15,
-          xPercent: i % 2 === 0 ? 10 : -10,
+          yPercent: -25 - i * 15,
+          xPercent: i % 2 === 0 ? 8 : -8,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -66,7 +62,7 @@ export default function Hero() {
         });
       });
 
-      // ── Effect #2: Text split animation ──
+      // Split text reveal
       if (headingRef.current) {
         const lines = headingRef.current.querySelectorAll(".split-line");
         lines.forEach((line, lineIdx) => {
@@ -74,41 +70,37 @@ export default function Hero() {
           line.innerHTML = "";
           line.style.display = "inline-block";
 
-          // Wrap each character in a span
           [...text].forEach((char) => {
             const span = document.createElement("span");
             span.textContent = char === " " ? "\u00A0" : char;
             span.style.display = "inline-block";
             span.style.willChange = "transform, opacity";
-            // Preserve gradient class on gradient spans
             if (line.dataset.gradient) {
               span.className = "gradient-text-animated";
             }
             line.appendChild(span);
           });
 
-          // Stagger reveal each character
           gsap.from(line.children, {
-            y: 60,
+            y: 50,
             opacity: 0,
-            rotateX: -40,
-            duration: 0.7,
-            ease: "back.out(1.7)",
-            stagger: 0.03,
-            delay: 0.3 + lineIdx * 0.15,
+            rotateX: -30,
+            duration: 0.65,
+            ease: "back.out(1.6)",
+            stagger: 0.025,
+            delay: 0.2 + lineIdx * 0.12,
           });
         });
       }
 
-      // Fade in the rest of the hero content
       gsap.from(".hero-fade-in", {
-        y: 30,
+        y: 25,
         opacity: 0,
         filter: "blur(6px)",
-        duration: 0.8,
+        duration: 0.75,
         ease: "power3.out",
-        stagger: 0.12,
-        delay: 0.9,
+        stagger: 0.1,
+        delay: 0.8,
       });
     }, sectionRef);
 
@@ -116,82 +108,106 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[calc(100vh-64px)] flex items-center pt-20 pb-10 overflow-hidden">
-      {/* Ambient orbs — with GSAP parallax */}
-      <div ref={(el) => (orbsRef.current[0] = el)} className="absolute top-10 right-5 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)", filter: "blur(120px)" }} />
-      <div ref={(el) => (orbsRef.current[1] = el)} className="absolute bottom-10 left-5 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%)", filter: "blur(140px)" }} />
-      <div ref={(el) => (orbsRef.current[2] = el)} className="absolute top-1/2 left-1/3 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(52,211,153,0.1), transparent 70%)", filter: "blur(100px)" }} />
-      <div ref={(el) => (orbsRef.current[3] = el)} className="absolute top-1/4 right-1/3 w-[200px] h-[200px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%)", filter: "blur(80px)" }} />
+    <section ref={sectionRef} className="relative min-h-[calc(100vh-66px)] flex items-center pt-24 pb-14 overflow-hidden">
+      {/* Ordivalabs Ambient Cobalt & Rose Glow Orbs */}
+      <div ref={(el) => (orbsRef.current[0] = el)} className="absolute top-10 right-10 w-[550px] h-[550px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(37,99,235,0.18), transparent 70%)", filter: "blur(110px)" }} />
+      <div ref={(el) => (orbsRef.current[1] = el)} className="absolute bottom-10 left-5 w-[450px] h-[450px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(244,63,94,0.1), transparent 70%)", filter: "blur(130px)" }} />
+      <div ref={(el) => (orbsRef.current[2] = el)} className="absolute top-1/2 left-1/3 w-[320px] h-[320px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(59,130,246,0.12), transparent 70%)", filter: "blur(90px)" }} />
 
-      <div className="w-full px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        {/* Left */}
+      <div className="w-full px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* Left: Scientific Typography & CTAs */}
         <div ref={leftRef}>
-          <div className="hero-fade-in">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-full mb-6" style={{ background: "rgba(16,185,129,0.08)", color: "#34d399", border: "1px solid rgba(16,185,129,0.15)", backdropFilter: "blur(8px)" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#10b981", boxShadow: "0 0 8px rgba(16,185,129,0.8)", animation: "soft-pulse 2s ease-in-out infinite" }} />
-              AI-Powered Underwriting
+          <div className="hero-fade-in flex items-center gap-2 mb-6">
+            <span className="tech-badge-cyan">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              ACTUARIAL INTELLIGENCE · GEMMA 4 E4B
+            </span>
+            <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest hidden sm:inline">
+              [LATENCY: &lt;50ms]
             </span>
           </div>
 
-          {/* Text split heading */}
-          <h1 ref={headingRef} className="text-4xl sm:text-5xl lg:text-[4.25rem] font-extrabold leading-[1.05] mb-6" style={{ perspective: "600px" }}>
-            <span className="split-line" style={{ color: "#fafafa" }}>Smarter Risk</span>
+          {/* Heading */}
+          <h1 ref={headingRef} className="text-4xl sm:text-5xl lg:text-[4.25rem] font-extrabold leading-[1.05] tracking-tight mb-6">
+            <span className="split-line text-white">Precision Risk</span>
             <br />
-            <span className="split-line" data-gradient="true" style={{ display: "inline-block" }}>Assessment</span>
-            <span className="split-line" style={{ color: "#fafafa" }}> in</span>
+            <span className="split-line" data-gradient="true">Intelligence</span>
+            <span className="split-line text-white"> in</span>
             <br />
-            <span className="split-line" style={{ color: "#fafafa" }}>Seconds</span>
+            <span className="split-line text-white">Milliseconds</span>
           </h1>
 
           <div className="hero-fade-in mb-5">
             <TypingSubtitle />
           </div>
 
-          <p className="hero-fade-in text-base sm:text-lg leading-relaxed mb-10 max-w-xl" style={{ color: "#71717a" }}>
-            Harness the power of AI to transform weeks of manual underwriting into instant, data-driven risk decisions with unmatched precision and consistency.
+          <p className="hero-fade-in text-base sm:text-lg leading-relaxed mb-8 max-w-xl text-slate-400 font-normal">
+            Automate high-stakes insurance underwriting with mathematical precision. Fusing traditional clinical metrics, live telematics, and local Gemma 4 E4B evidence reasoning into auditable, instant risk decisions.
           </p>
 
-          {/* CTAs with magnetic effect */}
-          <div className="hero-fade-in flex flex-wrap gap-4">
+          {/* CTAs */}
+          <div className="hero-fade-in flex flex-wrap gap-4 items-center">
             {isAuth ? (
               <MagneticButton strength={0.3}>
-                <Link href="/dashboard" className="btn-primary no-underline inline-flex items-center gap-2 px-10 py-4 text-base">
-                  Go to Dashboard
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <Link href="/dashboard" className="btn-primary no-underline px-8 py-3.5 text-sm">
+                  Access Underwriting Workbench
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
                 </Link>
               </MagneticButton>
             ) : (
               <>
                 <MagneticButton strength={0.3}>
-                  <Link href="/assess" className="btn-primary no-underline inline-flex items-center gap-2 px-10 py-4 text-base relative overflow-hidden group">
-                    <span className="relative z-10 flex items-center gap-2">
-                      Start Free Assessment
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <Link href="/assess" className="btn-primary no-underline px-8 py-3.5 text-sm group">
+                    <span className="flex items-center gap-2">
+                      Start Risk Assessment
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
                     </span>
                   </Link>
                 </MagneticButton>
                 <MagneticButton strength={0.25}>
-                  <a href="#how-it-works" className="btn-secondary no-underline inline-flex items-center gap-2 px-8 py-4 text-base group">
-                    See How It Works
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-y-0.5"><path d="M6 9l6 6 6-6"/></svg>
+                  <a href="#how-it-works" className="btn-secondary no-underline px-6 py-3.5 text-sm group">
+                    Explore Architecture
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-y-0.5">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
                   </a>
                 </MagneticButton>
               </>
             )}
           </div>
+
+          {/* Micro Telemetry Metrics */}
+          <div className="hero-fade-in grid grid-cols-3 gap-4 pt-8 mt-8 border-t border-blue-500/15 max-w-lg">
+            <div>
+              <p className="font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">99.4%</p>
+              <p className="font-mono text-[10px] text-blue-400 uppercase tracking-wider">Actuarial Precision</p>
+            </div>
+            <div>
+              <p className="font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">&lt; 3.0s</p>
+              <p className="font-mono text-[10px] text-blue-400 uppercase tracking-wider">Gemma 4 Reasoning</p>
+            </div>
+            <div>
+              <p className="font-mono text-xl sm:text-2xl font-bold text-white tracking-tight">100%</p>
+              <p className="font-mono text-[10px] text-blue-400 uppercase tracking-wider">IRDAI Audit Compliant</p>
+            </div>
+          </div>
         </div>
 
-        {/* Right — Architecture Diagram with parallax */}
-        <div ref={diagramRef} className="hidden lg:block">
+        {/* Right: Architecture Blueprint Diagram */}
+        <div ref={diagramRef} className="hidden lg:block relative">
           <ArchitectureDiagram />
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ animation: "bounce-down 2s ease-in-out infinite" }}>
-        <span className="text-[10px] uppercase tracking-widest font-medium" style={{ color: "#52525b" }}>Scroll</span>
-        <div className="w-5 h-8 rounded-full flex justify-center pt-1.5" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
-          <div className="w-1 h-2 rounded-full" style={{ background: "rgba(16,185,129,0.5)", animation: "float 2s ease-in-out infinite" }} />
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">[EXPLORE SYSTEM]</span>
+        <div className="w-5 h-8 rounded-full flex justify-center pt-1.5 border border-blue-500/20 bg-blue-950/20">
+          <div className="w-1 h-2 rounded-full bg-blue-400 animate-pulse" />
         </div>
       </div>
     </section>
