@@ -37,20 +37,20 @@ export default function RiskGauge({ score, size = 220 }) {
     y: cy + r * Math.sin(toRad(angle)),
   });
 
-  // Gradient color segments
+  // Ordivalabs technical gradient segments
   const segments = [
-    { from: 0, to: 35, color: "#10b981" },
-    { from: 35, to: 55, color: "#f59e0b" },
-    { from: 55, to: 75, color: "#ef4444" },
-    { from: 75, to: 100, color: "#dc2626" },
+    { from: 0, to: 35, color: "#3B82F6" },   // Electric cobalt low risk
+    { from: 35, to: 55, color: "#06B6D4" },  // Cyan moderate-low
+    { from: 55, to: 75, color: "#F59E0B" },  // Amber elevated
+    { from: 75, to: 100, color: "#F43F5E" }, // Rose critical
   ];
 
   const needleTip = arcPoint(scoreAngle, radius - 8);
   const needleBase1 = arcPoint(scoreAngle + 90, 4);
   const needleBase2 = arcPoint(scoreAngle - 90, 4);
 
-  const riskColor = animatedScore <= 35 ? "#10b981" : animatedScore <= 55 ? "#f59e0b" : animatedScore <= 75 ? "#ef4444" : "#dc2626";
-  const riskLabel = animatedScore <= 35 ? "Low Risk" : animatedScore <= 55 ? "Moderate" : animatedScore <= 75 ? "High Risk" : "Critical";
+  const riskColor = animatedScore <= 35 ? "#3B82F6" : animatedScore <= 55 ? "#06B6D4" : animatedScore <= 75 ? "#F59E0B" : "#F43F5E";
+  const riskLabel = animatedScore <= 35 ? "Low Risk" : animatedScore <= 55 ? "Moderate" : animatedScore <= 75 ? "Elevated Risk" : "Critical Risk";
 
   return (
     <div className="flex flex-col items-center">
@@ -64,7 +64,7 @@ export default function RiskGauge({ score, size = 220 }) {
           const largeArc = a2 - a1 > 180 ? 1 : 0;
           return (
             <path key={seg.from} d={`M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`}
-              fill="none" stroke={`${seg.color}20`} strokeWidth={12} strokeLinecap="round" />
+              fill="none" stroke={`${seg.color}25`} strokeWidth={10} strokeLinecap="round" />
           );
         })}
 
@@ -75,8 +75,8 @@ export default function RiskGauge({ score, size = 220 }) {
           const largeArc = scoreAngle - startAngle > 180 ? 1 : 0;
           return (
             <path d={`M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`}
-              fill="none" stroke={riskColor} strokeWidth={12} strokeLinecap="round"
-              style={{ filter: `drop-shadow(0 0 8px ${riskColor}60)` }} />
+              fill="none" stroke={riskColor} strokeWidth={10} strokeLinecap="round"
+              style={{ filter: `drop-shadow(0 0 10px ${riskColor}80)` }} />
           );
         })()}
 
@@ -87,23 +87,24 @@ export default function RiskGauge({ score, size = 220 }) {
           const inner = arcPoint(angle, radius + 6);
           return (
             <g key={val}>
-              <line x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke="#3f3f46" strokeWidth={1.5} />
+              <line x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke="rgba(37,99,235,0.3)" strokeWidth={1.5} />
               <text x={arcPoint(angle, radius + 22).x} y={arcPoint(angle, radius + 22).y} textAnchor="middle" dominantBaseline="middle"
-                fill="#52525b" fontSize={9} fontFamily="monospace">{val}</text>
+                fill="#64748B" fontSize={8} fontFamily="monospace">{val}</text>
             </g>
           );
         })}
 
         {/* Needle */}
         <polygon points={`${needleTip.x},${needleTip.y} ${needleBase1.x},${needleBase1.y} ${needleBase2.x},${needleBase2.y}`}
-          fill={riskColor} style={{ filter: `drop-shadow(0 2px 4px ${riskColor}40)` }} />
-        <circle cx={cx} cy={cy} r={6} fill="#1c1c24" stroke={riskColor} strokeWidth={2} />
+          fill={riskColor} style={{ filter: `drop-shadow(0 2px 6px ${riskColor}60)` }} />
+        <circle cx={cx} cy={cy} r={6} fill="#0A0F1D" stroke={riskColor} strokeWidth={2} />
 
         {/* Center score */}
-        <text x={cx} y={cy - 24} textAnchor="middle" fill={riskColor} fontSize={32} fontWeight={800} fontFamily="monospace">
+        <text x={cx} y={cy - 24} textAnchor="middle" fill="#FFFFFF" fontSize={32} fontWeight={800} fontFamily="monospace"
+          style={{ filter: `drop-shadow(0 0 8px ${riskColor}40)` }}>
           {animatedScore}
         </text>
-        <text x={cx} y={cy - 8} textAnchor="middle" fill="#52525b" fontSize={10} fontWeight={600} letterSpacing={1}>
+        <text x={cx} y={cy - 8} textAnchor="middle" fill={riskColor} fontSize={9} fontWeight={700} letterSpacing={1.2} fontFamily="monospace">
           {riskLabel.toUpperCase()}
         </text>
       </svg>

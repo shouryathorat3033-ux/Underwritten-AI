@@ -14,13 +14,13 @@ import { motion, AnimatePresence } from "framer-motion";
  */
 
 const COLORS = {
-  increase: "#ef4444",
-  decrease: "#10b981",
-  neutral: "#71717a",
-  text: "#fafafa",
-  muted: "#a1a1aa",
-  dim: "#52525b",
-  bar_bg: "rgba(255,255,255,0.04)",
+  increase: "#F43F5E", // Scientific rose (risk increase)
+  decrease: "#3B82F6", // Electric cobalt (risk decrease/credit)
+  neutral: "#64748B",  // Slate neutral
+  text: "#FFFFFF",
+  muted: "#94A3B8",
+  dim: "#475569",
+  bar_bg: "rgba(37,99,235,0.08)",
 };
 
 /* ── animation variants ── */
