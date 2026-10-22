@@ -2,43 +2,88 @@
 import useScrollReveal from "./useScrollReveal";
 
 const solutions = [
-  { title: "AI-Powered Analysis", features: ["Deep learning risk models", "Natural language processing", "Pattern recognition", "Continuous model training"], icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 3h-4s-2-1.05-2-3a4 4 0 014-4z"/><path d="M10 22v-4M14 22v-4M10 18h4M9 9H4a1 1 0 00-1 1v2a1 1 0 001 1h1M15 9h5a1 1 0 011 1v2a1 1 0 01-1 1h-1"/></svg>
-  ), color: "#10b981" },
-  { title: "Multi-Source Data Fusion", features: ["Medical & health records", "Financial & credit data", "IoT & telematics streams", "Behavioral analytics"], icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-  ), color: "#f59e0b" },
-  { title: "Instant Decisions", features: ["Lightning-fast processing", "Confidence-scored outputs", "Transparent explanations", "Audit-ready reports"], icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-  ), color: "#34d399" },
+  {
+    code: "SYS.01",
+    tag: "ENSEMBLE ENGINE",
+    title: "Stacked Machine Learning Stack",
+    desc: "300-tree GBR + 200-tree Random Forest meta-learned via Ridge Regression for an industry-leading R² of 0.978 across multi-line risk tiers.",
+    vectors: ["5-Fold Cross Validation", "4 Specialized Actuarial Models", "38ms Sub-Second Inference", "Dynamic Loss Calibration"],
+    accent: "#3b82f6",
+    badgeClass: "tech-badge",
+  },
+  {
+    code: "SYS.02",
+    tag: "TELEMETRY FUSION",
+    title: "Multimodal Alternative Telemetry",
+    desc: "Ingests and normalizes live IoT driving telemetry, biometric wearable indicators, and OCR document verification for 360° applicant grounding.",
+    vectors: ["Aadhaar & PAN Document OCR", "Live Telematics Score Fusion", "Wearable Health Activity Logs", "Financial CIBIL & Income Ingestion"],
+    accent: "#06b6d4",
+    badgeClass: "tech-badge-cyan",
+  },
+  {
+    code: "SYS.03",
+    tag: "EVIDENCE REASONING",
+    title: "Gemma 4 E4B Evidence Reasoning",
+    desc: "Local Gemma 4 E4B model provides evidence-based underwriting explanations, cross-factor interaction audits, and actionable verification checklists.",
+    vectors: ["Zero-Hallucination Grounding", "Underwriter Action Checklist", "Fact vs. Calculation Distinction", "IRDAI Circular 2020 Citing"],
+    accent: "#f43f5e",
+    badgeClass: "tech-badge-pink",
+  },
 ];
 
 export default function SolutionSection() {
   const ref = useScrollReveal();
   return (
-    <section id="features" className="py-24 sm:py-32">
+    <section id="features" className="py-24 sm:py-32 relative">
       <div className="w-full px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32">
         <div ref={ref} className="reveal-container">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(16,185,129,0.1)", color: "#34d399", backdropFilter: "blur(8px)" }}>The Solution</span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold leading-[1.1] mb-12" style={{ color: "#fafafa" }}>Intelligent Risk Assessment</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="tech-badge">
+              INTELLIGENT ARCHITECTURE
+            </span>
+            <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest">
+              [TRIPLE-VECTOR RISK ENGINE]
+            </span>
+          </div>
+
+          <h2 className="text-3xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight mb-4 text-white">
+            High-Precision Underwriting Intelligence
+          </h2>
+          <p className="text-base sm:text-lg mb-12 max-w-2xl text-slate-400 leading-relaxed font-normal">
+            Three interconnected intelligence layers deliver rapid mathematical scoring, multimodal data verification, and human-auditable reasoning.
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {solutions.map((s) => (
-              <div key={s.title} className="glass-card p-6 relative overflow-hidden group">
-                {/* Hover glow */}
-                <div className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" style={{ background: `${s.color}12`, filter: "blur(40px)" }} />
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110" style={{ background: "rgba(16,185,129,0.1)" }}>
-                  {s.icon}
+              <div
+                key={s.title}
+                className="blueprint-card p-7 relative overflow-hidden group border-blue-500/20 bg-gradient-to-b from-[#0e1526]/90 to-[#070a13]"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className={s.badgeClass}>
+                    [{s.code}] {s.tag}
+                  </span>
+                  <span className="w-2 h-2 rounded-full" style={{ background: s.accent, boxShadow: `0 0 10px ${s.accent}` }} />
                 </div>
-                <h3 className="text-lg font-semibold mb-3" style={{ color: "#fafafa" }}>{s.title}</h3>
-                <ul className="space-y-2 mb-4">
-                  {s.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm" style={{ color: "#a1a1aa" }}>
-                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: s.color, boxShadow: `0 0 6px ${s.color}40` }} />
-                      {f}
-                    </li>
+
+                <h3 className="text-xl font-bold mb-3 text-white tracking-tight">
+                  {s.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-400 mb-6 leading-relaxed">
+                  {s.desc}
+                </p>
+
+                <div className="space-y-2.5 pt-4 border-t border-blue-500/15">
+                  <p className="font-mono text-[10px] text-blue-400 uppercase tracking-wider mb-2">Capabilities</p>
+                  {s.vectors.map((v) => (
+                    <div key={v} className="flex items-center gap-2.5 text-xs text-slate-300">
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.accent }} />
+                      <span className="font-medium">{v}</span>
+                    </div>
                   ))}
-                </ul>
-                <div className="h-[2px] rounded-full mt-2 transition-all duration-700 group-hover:opacity-100 opacity-60" style={{ background: `linear-gradient(90deg, transparent, ${s.color}, transparent)` }} />
+                </div>
+
+                <div className="h-[2px] w-full mt-6 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
               </div>
             ))}
           </div>
